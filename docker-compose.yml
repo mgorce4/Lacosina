@@ -1,0 +1,37 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php82
+    depends_on:
+      - db
+    volumes:
+      - ./lacosina:/var/www/html/
+    ports:
+      - 80:80
+
+
+  db:
+    container_name: mariadb10
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: MySecurePwd
+      MARIADB_DATABASE: lacosina
+      MARIADB_USER: myuser
+      MARIADB_PASSWORD: monpassword
+    ports:
+      - 3306:3306
+
+
+  phpmya:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db
+      PMA_USER: myuser
+      PMA_PASSWORD: monpassword
+      UPLOAD_LIMIT: 20M
+    ports:
+      - 8899:80
