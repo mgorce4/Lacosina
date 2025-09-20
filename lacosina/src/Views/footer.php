@@ -1,3 +1,9 @@
-<footer>
-    <div>&copy; 2024 - IUT</div>
-</footer>
+    </div> <!-- fin container -->
+
+    <footer>
+        <div class="text-center fixed-bottom bg-light p-2">
+            &copy; <?php echo date("Y"); ?> - IUT
+        </div>
+    </footer>
+</body>
+</html>
