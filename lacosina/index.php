@@ -21,6 +21,9 @@ switch ($route) {
     case 'enregistrer':
         require_once __DIR__ . '/src/Controllers/enregistrerController.php';
         break;
+    case 'enregistrer_contact':
+        require_once __DIR__ . '/src/Controllers/enregistrer_contactController.php';
+        break;
     default:
         echo "Page non trouvée";
 }
