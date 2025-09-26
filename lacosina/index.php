@@ -15,6 +15,12 @@ switch ($route) {
     case 'contact':
         require_once __DIR__ . '/src/Controllers/contactController.php';
         break;
+    case 'ajout':
+        require_once __DIR__ . '/src/Controllers/ajoutController.php';
+        break;
+    case 'enregistrer':
+        require_once __DIR__ . '/src/Controllers/enregistrerController.php';
+        break;
     default:
         echo "Page non trouvée";
 }
