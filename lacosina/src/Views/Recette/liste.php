@@ -1,5 +1,5 @@
 <div class="row">
-    <?php foreach ($recipes as $recipe) :?>
+    <?php foreach ($recettes as $recipe) :?>
         <div class="col-4 p-2">
             <div class="card">
                 <div class="card-body">
