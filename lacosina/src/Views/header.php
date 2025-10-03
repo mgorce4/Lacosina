@@ -19,6 +19,9 @@
                     <a class="nav-link" href='?c=home'>Accueil</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href='?c=lister'>Recettes</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href='?c=contact'>Contact</a>
                 </li>
                 <li class="nav-item">
