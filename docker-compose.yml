@@ -35,3 +35,5 @@ services:
       UPLOAD_LIMIT: 20M
     ports:
       - 8899:80
+    volumes:
+      - db_data:/var/lib/mysql
