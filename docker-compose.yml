@@ -11,7 +11,6 @@ services:
     ports:
       - 80:80
 
-
   db:
     container_name: mariadb10
     image: mariadb:10.11
@@ -22,7 +21,8 @@ services:
       MARIADB_PASSWORD: monpassword
     ports:
       - 3306:3306
-
+    volumes:
+      - db_data:/var/lib/mysql
 
   phpmya:
     image: phpmyadmin/phpmyadmin:latest
@@ -35,5 +35,7 @@ services:
       UPLOAD_LIMIT: 20M
     ports:
       - 8899:80
-    volumes:
-      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
+    driver: local
