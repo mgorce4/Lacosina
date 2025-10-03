@@ -2,11 +2,17 @@
 // connexion à la base de données
 require_once __DIR__ . '/src/Models/connectDb.php';
 
+// Chargement des contrôleurs
+require_once __DIR__ . '/src/Controllers/RecetteController.php';
+
 // header
 require_once __DIR__ . '/src/Views/header.php';
 
 // routage simple
 $route = isset($_GET['c']) ? $_GET['c'] : 'home';
+
+// Initialisation du contrôleur de recettes
+$recetteController = new RecetteController($pdo);
 
 switch ($route) {
     case 'home':
@@ -16,10 +22,13 @@ switch ($route) {
         require_once __DIR__ . '/src/Controllers/contactController.php';
         break;
     case 'ajout':
-        require_once __DIR__ . '/src/Controllers/ajoutController.php';
+        $recetteController->ajouter();
         break;
     case 'enregistrer':
-        require_once __DIR__ . '/src/Controllers/enregistrerController.php';
+        $recetteController->enregistrer();
+        break;
+    case 'lister':
+        $recetteController->lister();
         break;
     case 'enregistrer_contact':
         require_once __DIR__ . '/src/Controllers/enregistrer_contactController.php';
