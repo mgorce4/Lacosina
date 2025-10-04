@@ -1,11 +1,13 @@
 <?php
 
-class RecetteController{
-    
-    private $pdo;
+//connexion à la base de données
+require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Models'.DIRECTORY_SEPARATOR.'Recette.php');
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+class RecetteController{
+    private $recetteModel;
+
+    public function __construct(){
+        $this->recetteModel = new Recette();
     }
 
     //fonction permettant d'ajouter une nouvelle recette
@@ -19,17 +21,12 @@ class RecetteController{
         $titre = $_POST['titre'];
         $description = $_POST['description'];
         $auteur = $_POST['auteur'];
+        $image = ''; // Image vide pour l'instant
 
-        //préparation de la requête d'insertion dans la base de données
-        $requete = $this->pdo->prepare('INSERT INTO recettes (titre, description, auteur, date_creation) VALUES (:titre, :description, :auteur, NOW())');
-        $requete->bindParam(':titre', $titre);
-        $requete->bindParam(':description', $description);
-        $requete->bindParam(':auteur', $auteur);
+        //utilisation du modèle pour enregistrer
+        $resultat = $this->recetteModel->add($titre, $description, $auteur, $image);
 
-        //exécution de la requête
-        $ajoutOk = $requete->execute();
-
-        if ($ajoutOk){
+        if ($resultat){
             require_once(__DIR__ . '/../Views/Recette/enregistrer.php');
         } else {
             echo 'Erreur lors de l\'enregistrement de la recette.';
@@ -38,12 +35,8 @@ class RecetteController{
 
     //fonction permettant de lister toutes les recettes
     function index(){
-        //préparation de la requête de sélection dans la base de données
-        $requete = $this->pdo->prepare("SELECT * FROM recettes ORDER BY date_creation DESC");
-
-        //exécution de la requête et récupération des données
-        $requete->execute();
-        $recettes = $requete->fetchAll(PDO::FETCH_ASSOC);
+        //utilisation du modèle pour récupérer les recettes
+        $recettes = $this->recetteModel->findAll();
 
         require_once(__DIR__ . '/../Views/Recette/liste.php');
     }

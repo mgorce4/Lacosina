@@ -3,8 +3,6 @@
 //import des classes contrôleurs
 require_once(__DIR__ . '/src/Controllers/RecetteController.php');
 require_once(__DIR__ . '/src/Controllers/ContactController.php');
-// connexion à la base de données
-require_once __DIR__ . '/src/Models/connectDb.php';
 
 // header
 require_once __DIR__ . '/src/Views/header.php';
@@ -14,8 +12,8 @@ $controller = isset($_GET['c']) ? $_GET['c'] : 'home';
 $action = isset($_GET['a']) ? $_GET['a'] : 'index';
 
 // Initialisation des contrôleurs
-$recetteController = new RecetteController($pdo);
-$contactController = new ContactController($pdo);
+$recetteController = new RecetteController();
+$contactController = new ContactController();
 
 switch ($controller) {
     case 'Recette':

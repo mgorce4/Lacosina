@@ -1,11 +1,13 @@
 <?php
 
+require_once(__DIR__ . '/../Models/Contact.php');
+
 class ContactController{
     
-    private $pdo;
+    private $contactModel;
 
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->contactModel = new Contact();
     }
 
     //fonction permettant d'afficher le formulaire de contact
@@ -20,16 +22,10 @@ class ContactController{
         $email = $_POST['email'];
         $description = $_POST['description'];
 
-        //préparation de la requête d'insertion dans la base de données
-        $requete = $this->pdo->prepare('INSERT INTO contacts (nom, email, description, date_envoi) VALUES (:nom, :email, :description, NOW())');
-        $requete->bindParam(':nom', $nom);
-        $requete->bindParam(':email', $email);
-        $requete->bindParam(':description', $description);
+        //utilisation du modèle pour enregistrer
+        $resultat = $this->contactModel->add($nom, $email, $description);
 
-        //exécution de la requête
-        $ajoutOk = $requete->execute();
-
-        if ($ajoutOk){
+        if ($resultat){
             require_once(__DIR__ . '/../Views/Contact/enregistrer_contact.php');
         } else {
             echo 'Erreur lors de l\'enregistrement du contact.';
