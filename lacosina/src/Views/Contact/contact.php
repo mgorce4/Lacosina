@@ -1,12 +1,12 @@
 <h1>Formulaire de contact</h1>
-<form action="?c=enregistrer_contact" method="post">
+<form action="?c=contact&a=enregistrer" method="post">
     <div class="mb-3">
         <label for= "nom" class="form-label">Votre nom</label>
         <input type="text" class="form-control"  name="nom" id="nom" required>
     </div>
     <div class="mb-3">
         <label for="email" class="form-label">Votre email</label>
-        <textarea class="form-control" name="email" id="email" required></textarea>
+        <input type="email" class="form-control" name="email" id="email" required>
     </div>
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>

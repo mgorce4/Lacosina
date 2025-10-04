@@ -1,7 +1,8 @@
 <?php
 
-//import de la classe RecetteController
+//import des classes contrôleurs
 require_once(__DIR__ . '/src/Controllers/RecetteController.php');
+require_once(__DIR__ . '/src/Controllers/ContactController.php');
 // connexion à la base de données
 require_once __DIR__ . '/src/Models/connectDb.php';
 
@@ -12,8 +13,9 @@ require_once __DIR__ . '/src/Views/header.php';
 $controller = isset($_GET['c']) ? $_GET['c'] : 'home';
 $action = isset($_GET['a']) ? $_GET['a'] : 'index';
 
-// Initialisation du contrôleur de recettes
+// Initialisation des contrôleurs
 $recetteController = new RecetteController($pdo);
+$contactController = new ContactController($pdo);
 
 switch ($controller) {
     case 'Recette':
@@ -34,16 +36,26 @@ switch ($controller) {
         }   
         break;
         
+    case 'contact':
+        switch ($action) {
+            case 'index':
+                $contactController->index();
+                break;
+            case 'enregistrer':
+                $contactController->enregistrer();
+                break;
+            default:
+                $contactController->index();
+        }
+        break;
+        
     case 'home':
         require_once __DIR__ . '/src/Controllers/homeController.php';
         break;
         
-    case 'contact':
-        require_once __DIR__ . '/src/Controllers/contactController.php';
-        break;
-        
+    // Rétrocompatibilité avec l'ancien système pour les contacts
     case 'enregistrer_contact':
-        require_once __DIR__ . '/src/Controllers/enregistrer_contactController.php';
+        $contactController->enregistrer();
         break;
         
     // Rétrocompatibilité avec l'ancien système

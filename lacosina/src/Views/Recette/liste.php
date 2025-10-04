@@ -5,7 +5,8 @@
                 <div class="card-body">
                     <h2 class="card-title"><?php echo $recipe['titre']; ?></h2>
                     <p class="card-text"><?php echo $recipe['description']; ?></p>
-                    Auteur : <a href="mailto:<?php echo $recipe['auteur']; ?>"><?php echo $recipe['auteur']; ?></a>
+                    <p class="text-muted">Auteur : <a href="mailto:<?php echo $recipe['auteur']; ?>"><?php echo $recipe['auteur']; ?></a></p>
+                </div>
             </div>
         </div>
     <?php endforeach; ?>
