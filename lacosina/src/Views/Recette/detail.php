@@ -3,6 +3,14 @@
         <div class="col-12">
             <h1><?php echo htmlspecialchars($recette['titre']); ?></h1>
             
+            <?php 
+            // Gestion de l'affichage de l'image
+            $imageSrc = !empty($recette['image']) ? htmlspecialchars($recette['image']) : 'upload/no-image.png';
+            ?>
+            <div class="text-center mb-4">
+                <img src="<?php echo $imageSrc; ?>" class="img-fluid rounded" alt="Image de <?php echo htmlspecialchars($recette['titre']); ?>" style="max-height: 400px; object-fit: cover;">
+            </div>
+            
             <div class="card mt-3">
                 <div class="card-body">
                     <h5 class="card-title">Description</h5>

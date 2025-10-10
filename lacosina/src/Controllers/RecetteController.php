@@ -21,10 +21,34 @@ class RecetteController{
         $titre = $_POST['titre'];
         $description = $_POST['description'];
         $auteur = $_POST['auteur'];
-        $image = ''; // Image vide pour l'instant
+        $image = isset($_FILES['image']) ? $_FILES['image'] : null;
+        
+        //Gestion de l'upload de l'image
+        $imagePath = null;
+        if ($image && $image['error'] === UPLOAD_ERR_OK && $image['size'] > 0){
+            // Dossier upload à la racine du site
+            $uploadDir = __DIR__ . '/../../upload/';
+            if (!is_dir($uploadDir)){
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            // Générer un nom unique pour éviter les conflits
+            $extension = pathinfo($image['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid() . '.' . $extension;
+            $fullPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($image['tmp_name'], $fullPath)) {
+                $imagePath = 'upload/' . $fileName; // Chemin relatif pour la base de données
+            }
+        }
+        
+        // Si aucune image n'est uploadée, utiliser l'image par défaut
+        if ($imagePath === null) {
+            $imagePath = 'upload/no-image.png';
+        }
 
         //utilisation du modèle pour enregistrer
-        $resultat = $this->recetteModel->add($titre, $description, $auteur, $image);
+        $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath);
 
         if ($resultat){
             require_once(__DIR__ . '/../Views/Recette/enregistrer.php');

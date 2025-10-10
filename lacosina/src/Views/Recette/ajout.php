@@ -1,5 +1,10 @@
 <h1>Ajouter une recette</h1>
-<form action="?c=enregistrer" method="post" enctype="multipart/form-data">
+<form action="?c=Recette&a=enregistrer" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for= "image" class="form-label">Image de la recette (optionnel)</label>
+        <input type="file" class="form-control"  name="image" id="image" accept="image/*">
+        <div class="form-text">Si aucune image n'est sélectionnée, une image par défaut sera utilisée.</div>
+    </div>
     <div class="mb-3">
         <label for= "titre" class="form-label">Titre de la recette</label>
         <input type="text" class="form-control"  name="titre" id="titre" required>

@@ -10,7 +10,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Script JavaScript personnalisé -->
-    <script src="src/Views/js/front.js"></script>
+    <script src="./src/Views/js/front.js" defer></script>
 </head>
 <body>
     <!-- menu de navigation -->
