@@ -16,6 +16,3 @@
         </div>
     <?php endforeach; ?>
 </div>
-
-<!-- Script JavaScript pour les interactions -->
-<script src="src/Views/js/front.js"></script>
