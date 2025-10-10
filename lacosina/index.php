@@ -29,6 +29,9 @@ switch ($controller) {
             case 'enregistrer':
                 $recetteController->enregistrer();
                 break;
+            case 'detail':
+                $recetteController->detail();
+                break;
             default:
                 echo "Action non trouvée pour le contrôleur Recette";
         }   
@@ -65,6 +68,9 @@ switch ($controller) {
         break;
     case 'lister':
         $recetteController->index();
+        break;
+    case 'detail':
+        $recetteController->detail();
         break;
         
     default:

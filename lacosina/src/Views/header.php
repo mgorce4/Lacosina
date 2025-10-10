@@ -32,4 +32,4 @@
     </nav>
 
     <!-- corps de la page -->
-    <div class="container mt-4">
+    <div class="container w-75 m-auto">

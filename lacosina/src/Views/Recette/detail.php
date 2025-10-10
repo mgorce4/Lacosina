@@ -1,0 +1,45 @@
+<?php if (isset($recette) && $recette): ?>
+    <div class="row">
+        <div class="col-12">
+            <h1><?php echo htmlspecialchars($recette['titre']); ?></h1>
+            
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Description</h5>
+                    <p class="card-text"><?php echo nl2br(htmlspecialchars($recette['description'])); ?></p>
+                    
+                    <hr>
+                    
+                    <p class="text-muted">
+                        <strong>Auteur :</strong> 
+                        <a href="mailto:<?php echo htmlspecialchars($recette['auteur']); ?>" class="text-decoration-none">
+                            <?php echo htmlspecialchars($recette['auteur']); ?>
+                        </a>
+                    </p>
+                    
+                    <?php if (isset($recette['date_creation'])): ?>
+                        <p class="text-muted">
+                            <strong>Date de création :</strong> 
+                            <?php echo date('d/m/Y à H:i', strtotime($recette['date_creation'])); ?>
+                        </p>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <a href="?c=Recette&a=lister" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Retour à la liste des recettes
+                </a>
+            </div>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Recette non trouvée</h4>
+        <p>La recette demandée n'existe pas ou n'a pas pu être chargée.</p>
+        <hr>
+        <p class="mb-0">
+            <a href="?c=Recette&a=lister" class="btn btn-primary">Retour à la liste des recettes</a>
+        </p>
+    </div>
+<?php endif; ?>

@@ -40,5 +40,25 @@ class RecetteController{
 
         require_once(__DIR__ . '/../Views/Recette/liste.php');
     }
+
+    //fonction permettant d'afficher le détail d'une recette
+    function detail(){
+        // Récupération et validation de l'ID depuis $_GET['id']
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if ($id > 0) {
+            //utilisation du modèle pour récupérer une recette spécifique
+            $recette = $this->recetteModel->find($id);
+            
+            // Vérification que la recette existe
+            if (!$recette) {
+                $recette = null; // Recette non trouvée
+            }
+        } else {
+            $recette = null; // ID invalide
+        }
+
+        require_once(__DIR__ . '/../Views/Recette/detail.php');
+    }
 }
 
