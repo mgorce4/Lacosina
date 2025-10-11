@@ -56,7 +56,7 @@ class RecetteController{
         
         // Si aucune image et mode création, utiliser l'image par défaut
         if ($imagePath === null && !$isModification) {
-            $imagePath = 'upload/no-image.png';
+            $imagePath = 'upload/no_image.png';
         }
 
         // Choisir entre création ou modification
