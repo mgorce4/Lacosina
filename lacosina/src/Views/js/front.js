@@ -19,11 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         recipe.addEventListener('click', (event)=>{
-            event.preventDefault(); //empêche le comportement par défaut
+            // Éviter la navigation si on clique sur un lien ou bouton existant
+            if (event.target.tagName === 'A' || event.target.tagName === 'BUTTON' || event.target.closest('a') || event.target.closest('button')) {
+                return; // Laisser le comportement normal des liens/boutons
+            }
+            
             let recipeId = recipe.dataset.id; //Récupère l'id de la recette
             
-            // Ouvrir la vue de détail avec window.open
-            window.open(`index.php?c=Recette&a=detail&id=${recipeId}`, '_blank');
+            if (recipeId) {
+                // Naviguer vers la vue de détail dans la même fenêtre
+                window.location.href = `index.php?c=Recette&a=detail&id=${recipeId}`;
+            }
         })
     })
 });

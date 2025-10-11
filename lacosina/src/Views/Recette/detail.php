@@ -1,4 +1,5 @@
 <?php if (isset($recette) && $recette): ?>
+    <!-- DEBUG: Recette trouvée, ID = <?php echo $recette['id']; ?> -->
     <div class="row">
         <div class="col-12">
             <h1><?php echo htmlspecialchars($recette['titre']); ?></h1>
@@ -34,10 +35,18 @@
                 </div>
             </div>
             
-            <div class="mt-3">
-                <a href="?c=Recette&a=lister" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Retour à la liste des recettes
-                </a>
+            <div class="mt-4 mb-5">
+                <div class="row">
+                    <div class="col-12">
+                        <a href="?c=Recette&a=modifier&id=<?php echo $recette['id']; ?>" class="btn btn-primary">
+                            Modifier la recette
+                        </a>
+                        <a href="?c=Recette&a=lister" class="btn btn-primary me-3">
+                            Retour à la liste des recettes
+                        </a>
+                        
+                    </div>
+                </div>
             </div>
         </div>
     </div>

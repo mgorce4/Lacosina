@@ -15,7 +15,7 @@ class RecetteController{
         require_once(__DIR__ . '/../Views/Recette/ajout.php');
     }
 
-    //fonction permettant d'enregistrer une nouvelle recette
+    //fonction permettant d'enregistrer une nouvelle recette ou modifier une existante
     function enregistrer(){
         //récupération des données de formulaire
         $titre = $_POST['titre'];
@@ -23,8 +23,20 @@ class RecetteController{
         $auteur = $_POST['auteur'];
         $image = isset($_FILES['image']) ? $_FILES['image'] : null;
         
-        //Gestion de l'upload de l'image
+        // Vérifier s'il s'agit d'une modification (présence d'un ID)
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $isModification = $id > 0;
+        
+        // Gestion de l'image selon création ou modification
         $imagePath = null;
+        
+        if ($isModification) {
+            // Mode modification : récupérer l'ancienne recette
+            $ancienneRecette = $this->recetteModel->find($id);
+            $imagePath = $ancienneRecette['image']; // Conserver l'ancienne image par défaut
+        }
+        
+        //Gestion de l'upload de l'image
         if ($image && $image['error'] === UPLOAD_ERR_OK && $image['size'] > 0){
             // Dossier upload à la racine du site
             $uploadDir = __DIR__ . '/../../upload/';
@@ -42,18 +54,31 @@ class RecetteController{
             }
         }
         
-        // Si aucune image n'est uploadée, utiliser l'image par défaut
-        if ($imagePath === null) {
+        // Si aucune image et mode création, utiliser l'image par défaut
+        if ($imagePath === null && !$isModification) {
             $imagePath = 'upload/no-image.png';
         }
 
-        //utilisation du modèle pour enregistrer
-        $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath);
-
-        if ($resultat){
-            require_once(__DIR__ . '/../Views/Recette/enregistrer.php');
+        // Choisir entre création ou modification
+        if ($isModification) {
+            // Modification de la recette existante
+            $resultat = $this->recetteModel->update($id, $titre, $description, $auteur, $imagePath);
+            
+            if ($resultat) {
+                // Affichage de la vue de confirmation de modification
+                require_once(__DIR__ . '/../Views/Recette/modifie.php');
+            } else {
+                echo 'Erreur lors de la modification de la recette.';
+            }
         } else {
-            echo 'Erreur lors de l\'enregistrement de la recette.';
+            // Création d'une nouvelle recette
+            $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath);
+
+            if ($resultat){
+                require_once(__DIR__ . '/../Views/Recette/enregistrer.php');
+            } else {
+                echo 'Erreur lors de l\'enregistrement de la recette.';
+            }
         }
     }
 
@@ -83,6 +108,26 @@ class RecetteController{
         }
 
         require_once(__DIR__ . '/../Views/Recette/detail.php');
+    }
+
+    //fonction permettant d'afficher le formulaire de modification d'une recette
+    function modifier(){
+        // Récupération et validation de l'ID depuis $_GET['id']
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if ($id > 0) {
+            //utilisation du modèle pour récupérer la recette à modifier
+            $recette = $this->recetteModel->find($id);
+            
+            // Vérification que la recette existe
+            if (!$recette) {
+                $recette = null; // Recette non trouvée
+            }
+        } else {
+            $recette = null; // ID invalide
+        }
+
+        require_once(__DIR__ . '/../Views/Recette/modif.php');
     }
 }
 

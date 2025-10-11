@@ -32,6 +32,9 @@ switch ($controller) {
             case 'detail':
                 $recetteController->detail();
                 break;
+            case 'modifier':
+                $recetteController->modifier();
+                break;
             default:
                 echo "Action non trouvée pour le contrôleur Recette";
         }   
