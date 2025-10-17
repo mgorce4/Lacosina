@@ -107,6 +107,9 @@ switch ($controller) {
             case 'logout':
                 $userController->logout();
                 break;
+            case 'profil':
+                $userController->profil();
+                break;
             default:
                 echo "Action non trouvée pour le contrôleur User";
         }

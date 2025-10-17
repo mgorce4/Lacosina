@@ -12,11 +12,25 @@ class RecetteController{
 
     //fonction permettant d'ajouter une nouvelle recette
     function ajouter(){
+        // Vérifier si l'utilisateur est connecté
+        if (!isset($_SESSION['user_id'])) {
+            echo '<div class="alert alert-warning">Vous devez être connecté pour ajouter une recette.</div>';
+            echo '<a href="?c=User&a=connexion" class="btn btn-primary">Se connecter</a>';
+            return;
+        }
+        
         require_once(__DIR__ . '/../Views/Recette/ajout.php');
     }
 
     //fonction permettant d'enregistrer une nouvelle recette ou modifier une existante
     function enregistrer(){
+        // Vérifier si l'utilisateur est connecté
+        if (!isset($_SESSION['user_id'])) {
+            echo '<div class="alert alert-warning">Vous devez être connecté pour effectuer cette action.</div>';
+            echo '<a href="?c=User&a=connexion" class="btn btn-primary">Se connecter</a>';
+            return;
+        }
+        
         //récupération des données de formulaire
         $titre = $_POST['titre'];
         $description = $_POST['description'];
@@ -112,6 +126,13 @@ class RecetteController{
 
     //fonction permettant d'afficher le formulaire de modification d'une recette
     function modifier(){
+        // Vérifier si l'utilisateur est connecté
+        if (!isset($_SESSION['user_id'])) {
+            echo '<div class="alert alert-warning">Vous devez être connecté pour modifier une recette.</div>';
+            echo '<a href="?c=User&a=connexion" class="btn btn-primary">Se connecter</a>';
+            return;
+        }
+        
         // Récupération et validation de l'ID depuis $_GET['id']
         $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
         

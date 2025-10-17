@@ -108,4 +108,16 @@ class UserController{
         // Rediriger vers deconnexion
         $this->deconnexion();
     }
+
+    //fonction permettant d'afficher le profil de l'utilisateur
+    function profil(){
+        // Vérifier si l'utilisateur est connecté
+        if (!isset($_SESSION['user_id'])) {
+            echo '<div class="alert alert-warning">Vous devez être connecté pour accéder à votre profil.</div>';
+            echo '<a href="?c=User&a=connexion" class="btn btn-primary">Se connecter</a>';
+            return;
+        }
+        
+        require_once(__DIR__ . '/../Views/User/profil.php');
+    }
 }

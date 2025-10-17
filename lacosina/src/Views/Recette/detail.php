@@ -35,16 +35,20 @@
                 </div>
             </div>
             
+            <!-- Boutons d'action -->
             <div class="mt-4 mb-5">
                 <div class="row">
                     <div class="col-12">
-                        <a href="?c=Recette&a=modifier&id=<?php echo $recette['id']; ?>" class="btn btn-primary">
-                            Modifier la recette
-                        </a>
                         <a href="?c=Recette&a=lister" class="btn btn-primary me-3">
-                            Retour à la liste des recettes
+                            ← Retour à la liste des recettes
                         </a>
-                        
+                        <?php
+                        // Afficher le bouton de modification seulement si l'utilisateur est connecté
+                        if (isset($_SESSION['user_id'])): ?>
+                            <a href="?c=Recette&a=modifier&id=<?php echo $recette['id']; ?>" class="btn btn-primary">
+                                Modifier cette recette
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

@@ -28,19 +28,22 @@
                 <li class="nav-item">
                     <a class="nav-link" href='?c=contact'>Contact</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href='?c=ajout'>Ajouter une recette</a>
-                </li>
             </ul>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <?php
                 // Vérifier si l'utilisateur est connecté
                 if (isset($_SESSION['user_id'])): ?>
-                    <li class="nav-item">
-                        <span class="nav-link">Bonjour, <strong><?php echo htmlspecialchars($_SESSION['identifiant']); ?></strong></span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-outline-danger" href='?c=User&a=deconnexion'>Déconnexion</a>
+                    <!-- Menu déroulant pour l'utilisateur connecté -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Bienvenue, <strong><?php echo htmlspecialchars($_SESSION['identifiant']); ?></strong>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href='?c=User&a=profil'>Mon profil</a></li>
+                            <li><a class="dropdown-item" href='?c=ajout'>Ajouter une recette</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href='?c=User&a=deconnexion'>Déconnexion</a></li>
+                        </ul>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
