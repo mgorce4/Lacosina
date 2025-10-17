@@ -110,6 +110,9 @@ switch ($controller) {
             case 'profil':
                 $userController->profil();
                 break;
+            case 'modifierProfil':
+                $userController->modifierProfil();
+                break;
             default:
                 echo "Action non trouvée pour le contrôleur User";
         }

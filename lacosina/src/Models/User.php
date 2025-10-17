@@ -86,6 +86,16 @@ Class User {
         return $stmt->execute();
     }
 
+    // Mettre à jour le profil d'un utilisateur (sans modifier isAdmin)
+    public function updateProfil($id, $identifiant, $mail){
+        $query = "UPDATE users SET identifiant = :identifiant, mail = :mail WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':identifiant', $identifiant);
+        $stmt->bindParam(':mail', $mail);
+        return $stmt->execute();
+    }
+
     // Mettre à jour le mot de passe d'un utilisateur
     public function updatePassword($id, $newPassword){
         // Hasher le nouveau mot de passe

@@ -120,4 +120,79 @@ class UserController{
         
         require_once(__DIR__ . '/../Views/User/profil.php');
     }
+
+    //fonction permettant de modifier le profil de l'utilisateur
+    function modifierProfil(){
+        // Définir le header JSON
+        header('Content-Type: application/json');
+        
+        // Vérifier si l'utilisateur est connecté
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour modifier votre profil.']);
+            exit; // Important : arrêter l'exécution pour éviter le header/footer
+        }
+
+        // Vérifier que la requête est en POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Méthode non autorisée.']);
+            exit;
+        }
+
+        // Récupérer les données JSON envoyées
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$data) {
+            // Si ce n'est pas du JSON, essayer avec $_POST
+            $data = $_POST;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $newIdentifiant = trim($data['identifiant'] ?? '');
+        $newMail = trim($data['mail'] ?? '');
+
+        // Validation des données
+        if (empty($newIdentifiant) || empty($newMail)) {
+            echo json_encode(['success' => false, 'message' => 'L\'identifiant et l\'email ne peuvent pas être vides.']);
+            exit;
+        }
+
+        // Validation du format email
+        if (!filter_var($newMail, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(['success' => false, 'message' => 'L\'adresse email n\'est pas valide.']);
+            exit;
+        }
+
+        // Vérifier si le nouvel identifiant est déjà utilisé par un autre utilisateur
+        $existingUser = $this->userModel->findByIdentifiant($newIdentifiant);
+        if ($existingUser && $existingUser['id'] != $userId) {
+            echo json_encode(['success' => false, 'message' => 'Cet identifiant est déjà utilisé par un autre utilisateur.']);
+            exit;
+        }
+
+        // Vérifier si le nouvel email est déjà utilisé par un autre utilisateur
+        $existingEmail = $this->userModel->findByEmail($newMail);
+        if ($existingEmail && $existingEmail['id'] != $userId) {
+            echo json_encode(['success' => false, 'message' => 'Cet email est déjà utilisé par un autre utilisateur.']);
+            exit;
+        }
+
+        // Mettre à jour le profil
+        $result = $this->userModel->updateProfil($userId, $newIdentifiant, $newMail);
+
+        if ($result) {
+            // Mettre à jour la session
+            $_SESSION['identifiant'] = $newIdentifiant;
+            $_SESSION['mail'] = $newMail;
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Profil mis à jour avec succès.',
+                'identifiant' => $newIdentifiant,
+                'mail' => $newMail
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Erreur lors de la mise à jour du profil.']);
+        }
+        exit; // Important : arrêter l'exécution pour éviter le header/footer
+    }
 }

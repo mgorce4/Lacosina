@@ -11,8 +11,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Script JavaScript personnalisé -->
-    <script src="./src/Views/js/front.js" defer></script>
+    <!-- Scripts JavaScript personnalisés -->
+    <script src="./src/Views/js/recipes.js" defer></script>
+    <script src="./src/Views/js/users.js" defer></script>
 </head>
 <body>
     <!-- menu de navigation -->
