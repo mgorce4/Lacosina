@@ -59,17 +59,18 @@ class UserController{
         require_once(__DIR__ . '/../Views/User/connexion.php');
     }
 
-    //fonction permettant de connecter un utilisateur
-    function login(){
-        //récupération des données du formulaire
+    //fonction permettant de vérifier la connexion d'un utilisateur
+    function verifieConnexion(){
+        // Récupération des données du formulaire
         $identifiant = $_POST['identifiant'];
         $password = $_POST['password'];
         
-        // Authentification de l'utilisateur
-        $user = $this->userModel->authenticate($identifiant, $password);
+        // Requête de vérification de l'identifiant
+        $user = $this->userModel->findByIdentifiant($identifiant);
         
-        if ($user) {
-            // Stocker les informations de l'utilisateur en session
+        // Vérification de l'existence de l'utilisateur et du mot de passe avec password_verify
+        if ($user && password_verify($password, $user['password'])) {
+            // Identifiants corrects : enregistrer dans la session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['identifiant'] = $user['identifiant'];
             $_SESSION['mail'] = $user['mail'];
@@ -79,19 +80,32 @@ class UserController{
             echo '<div class="alert alert-success">Connexion réussie ! Bienvenue ' . htmlspecialchars($user['identifiant']) . '</div>';
             echo '<script>setTimeout(function(){ window.location.href = "index.php"; }, 2000);</script>';
         } else {
+            // Identifiants incorrects : afficher message d'erreur
             echo '<div class="alert alert-danger">Identifiant ou mot de passe incorrect.</div>';
             require_once(__DIR__ . '/../Views/User/connexion.php');
         }
     }
 
+    //fonction permettant de connecter un utilisateur (ancienne version, garde pour compatibilité)
+    function login(){
+        // Rediriger vers verifieConnexion
+        $this->verifieConnexion();
+    }
+
     //fonction permettant de déconnecter un utilisateur
-    function logout(){
-        // Détruire toutes les variables de session
+    function deconnexion(){
+        // Supprimer la session à l'aide de session_destroy()
         session_unset();
         session_destroy();
         
-        // Redirection vers la page d'accueil
+        // Redirection vers l'accueil
         echo '<div class="alert alert-info">Vous avez été déconnecté.</div>';
         echo '<script>setTimeout(function(){ window.location.href = "index.php"; }, 2000);</script>';
+    }
+
+    //fonction permettant de déconnecter un utilisateur (ancienne version, garde pour compatibilité)
+    function logout(){
+        // Rediriger vers deconnexion
+        $this->deconnexion();
     }
 }

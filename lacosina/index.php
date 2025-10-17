@@ -95,8 +95,14 @@ switch ($controller) {
             case 'connexion':
                 $userController->connexion();
                 break;
+            case 'verifieConnexion':
+                $userController->verifieConnexion();
+                break;
             case 'login':
                 $userController->login();
+                break;
+            case 'deconnexion':
+                $userController->deconnexion();
                 break;
             case 'logout':
                 $userController->logout();

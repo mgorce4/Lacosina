@@ -37,10 +37,10 @@
                 // Vérifier si l'utilisateur est connecté
                 if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
-                        <span class="nav-link">Bonjour, <?php echo htmlspecialchars($_SESSION['identifiant']); ?></span>
+                        <span class="nav-link">Bonjour, <strong><?php echo htmlspecialchars($_SESSION['identifiant']); ?></strong></span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn btn-outline-danger" href='?c=User&a=logout'>Déconnexion</a>
+                        <a class="nav-link btn btn-outline-danger" href='?c=User&a=deconnexion'>Déconnexion</a>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">
