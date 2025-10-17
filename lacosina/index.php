@@ -1,8 +1,14 @@
 <?php
 
+// Démarrer la session AVANT tout affichage
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 //import des classes contrôleurs
 require_once(__DIR__ . '/src/Controllers/RecetteController.php');
 require_once(__DIR__ . '/src/Controllers/ContactController.php');
+require_once(__DIR__ . '/src/Controllers/UserController.php');
 
 // header
 require_once __DIR__ . '/src/Views/header.php';
@@ -14,6 +20,7 @@ $action = isset($_GET['a']) ? $_GET['a'] : 'index';
 // Initialisation des contrôleurs
 $recetteController = new RecetteController();
 $contactController = new ContactController();
+$userController = new UserController();
 
 switch ($controller) {
     case 'Recette':
@@ -74,6 +81,29 @@ switch ($controller) {
         break;
     case 'detail':
         $recetteController->detail();
+        break;
+        
+    case 'User':
+    case 'user':
+        switch ($action) {
+            case 'inscription':
+                $userController->inscription();
+                break;
+            case 'enregistrer':
+                $userController->enregistrer();
+                break;
+            case 'connexion':
+                $userController->connexion();
+                break;
+            case 'login':
+                $userController->login();
+                break;
+            case 'logout':
+                $userController->logout();
+                break;
+            default:
+                echo "Action non trouvée pour le contrôleur User";
+        }
         break;
         
     default:

@@ -32,6 +32,25 @@
                     <a class="nav-link" href='?c=ajout'>Ajouter une recette</a>
                 </li>
             </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <?php
+                // Vérifier si l'utilisateur est connecté
+                if (isset($_SESSION['user_id'])): ?>
+                    <li class="nav-item">
+                        <span class="nav-link">Bonjour, <?php echo htmlspecialchars($_SESSION['identifiant']); ?></span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-danger" href='?c=User&a=logout'>Déconnexion</a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-primary me-2" href='?c=User&a=inscription'>Inscription</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-primary" href='?c=User&a=connexion'>Connexion</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
         </div>
     </nav>
 
