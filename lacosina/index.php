@@ -9,18 +9,31 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once(__DIR__ . '/src/Controllers/RecetteController.php');
 require_once(__DIR__ . '/src/Controllers/ContactController.php');
 require_once(__DIR__ . '/src/Controllers/UserController.php');
-
-// header
-require_once __DIR__ . '/src/Views/header.php';
+require_once(__DIR__ . '/src/Controllers/FavoriController.php');
 
 // routage double: c=contrôleur & a=action
 $controller = isset($_GET['c']) ? $_GET['c'] : 'home';
 $action = isset($_GET['a']) ? $_GET['a'] : 'index';
 
+// Liste des actions qui retournent du JSON (sans header/footer)
+$jsonActions = [
+    'getFavoris',
+    'modifierProfil',
+    'ajouter',
+    'supprimer',
+    'toggle'
+];
+
+// Afficher le header seulement si ce n'est pas une action JSON
+if (!in_array($action, $jsonActions)) {
+    require_once __DIR__ . '/src/Views/header.php';
+}
+
 // Initialisation des contrôleurs
 $recetteController = new RecetteController();
 $contactController = new ContactController();
 $userController = new UserController();
+$favoriController = new FavoriController();
 
 switch ($controller) {
     case 'Recette':
@@ -118,9 +131,35 @@ switch ($controller) {
         }
         break;
         
+    case 'Favori':
+    case 'favori':
+        switch ($action) {
+            case 'liste':
+            case 'index':
+                $favoriController->liste();
+                break;
+            case 'getFavoris':
+                $favoriController->getFavoris();
+                break;
+            case 'ajouter':
+                $favoriController->ajouter();
+                break;
+            case 'supprimer':
+                $favoriController->supprimer();
+                break;
+            case 'toggle':
+                $favoriController->toggle();
+                break;
+            default:
+                echo "Action non trouvée pour le contrôleur Favori";
+        }
+        break;
+        
     default:
         echo "Page non trouvée";
 }
 
-// footer
-require_once __DIR__ . '/src/Views/footer.php';
+// Afficher le footer seulement si ce n'est pas une action JSON
+if (!in_array($action, $jsonActions)) {
+    require_once __DIR__ . '/src/Views/footer.php';
+}

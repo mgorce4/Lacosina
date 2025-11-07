@@ -41,6 +41,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href='?c=User&a=profil'>Mon profil</a></li>
+                            <li><a class="dropdown-item" href='?c=Favori&a=liste'>Mes recettes favorites</a></li>
                             <li><a class="dropdown-item" href='?c=ajout'>Ajouter une recette</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href='?c=User&a=deconnexion'>Déconnexion</a></li>
@@ -60,3 +61,17 @@
 
     <!-- corps de la page -->
     <div class="container w-75 m-auto">
+        
+        <?php
+        // Afficher les messages de la session
+        if (isset($_SESSION['message'])): ?>
+            <div class="alert alert-<?php echo htmlspecialchars($_SESSION['message_type'] ?? 'info'); ?> alert-dismissible fade show mt-3" role="alert">
+                <?php echo htmlspecialchars($_SESSION['message']); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php
+            // Supprimer le message après l'avoir affiché
+            unset($_SESSION['message']);
+            unset($_SESSION['message_type']);
+        endif;
+        ?>

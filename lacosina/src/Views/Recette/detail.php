@@ -48,12 +48,95 @@
                             <a href="?c=Recette&a=modifier&id=<?php echo $recette['id']; ?>" class="btn btn-primary">
                                 Modifier cette recette
                             </a>
+                            <?php if (isset($estDansFavoris) && $estDansFavoris): ?>
+                                <button onclick="retirerDesFavoris(<?php echo $recette['id']; ?>)" class="btn btn-danger">
+                                    <i class="bi bi-heart-fill"></i> Retirer des favoris
+                                </button>
+                            <?php else: ?>
+                                <button onclick="ajouterAuxFavoris(<?php echo $recette['id']; ?>)" class="btn btn-warning">
+                                    <i class="bi bi-heart"></i> Ajouter aux favoris
+                                </button>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+    function ajouterAuxFavoris(recetteId) {
+        if (!recetteId || recetteId <= 0) {
+            alert('ID de recette invalide.');
+            return;
+        }
+
+        // Désactiver le bouton pendant la requête
+        event.target.disabled = true;
+        event.target.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Ajout en cours...';
+
+        fetch(`index.php?c=Favori&a=ajouter&id=${recetteId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Recharger la page pour mettre à jour le bouton
+                location.reload();
+            } else {
+                alert(data.message);
+                // Réactiver le bouton
+                event.target.disabled = false;
+                event.target.innerHTML = '<i class="bi bi-heart"></i> Ajouter aux favoris';
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de l\'ajout aux favoris.');
+            // Réactiver le bouton
+            event.target.disabled = false;
+            event.target.innerHTML = '<i class="bi bi-heart"></i> Ajouter aux favoris';
+        });
+    }
+
+    function retirerDesFavoris(recetteId) {
+        if (!recetteId || recetteId <= 0) {
+            alert('ID de recette invalide.');
+            return;
+        }
+
+        if (!confirm('Voulez-vous vraiment retirer cette recette de vos favoris ?')) {
+            return;
+        }
+
+        // Désactiver le bouton pendant la requête
+        event.target.disabled = true;
+        event.target.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Retrait en cours...';
+
+        fetch(`index.php?c=Favori&a=supprimer&id=${recetteId}`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Recharger la page pour mettre à jour le bouton
+                location.reload();
+            } else {
+                alert(data.message);
+                // Réactiver le bouton
+                event.target.disabled = false;
+                event.target.innerHTML = '<i class="bi bi-heart-fill"></i> Retirer des favoris';
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors du retrait des favoris.');
+            // Réactiver le bouton
+            event.target.disabled = false;
+            event.target.innerHTML = '<i class="bi bi-heart-fill"></i> Retirer des favoris';
+        });
+    }
+    </script>
 <?php else: ?>
     <div class="alert alert-warning" role="alert">
         <h4 class="alert-heading">Recette non trouvée</h4>

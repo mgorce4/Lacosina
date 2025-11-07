@@ -130,4 +130,77 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 5000);
         }
     }
+
+    // ========== Gestion de la liste des favoris ==========
+    
+    // Récupérer la balise div qui listera les recettes favorites
+    let listeFavoris = document.querySelector('#liste-favoris');
+    
+    // Si cette div existe, récupérer la liste des favoris via fetch
+    if (listeFavoris) {
+        // Récupérer l'ID de l'utilisateur via l'attribut data-id
+        let userId = listeFavoris.dataset.id;
+        
+        // Fonction pour charger les favoris via fetch
+        function chargerFavoris() {
+            fetch(`index.php?c=Favori&a=getFavoris`)
+            .then(response => response.json()) // Maintenant on peut parser directement en JSON
+            .then(data => {
+                if (data.success) {
+                    console.log('Favoris chargés:', data);
+                    console.log('Nombre de favoris:', data.count);
+                    
+                    // Afficher les favoris sous forme de liste à puces
+                    afficherFavorisEnListe(data.favoris);
+                } else {
+                    console.error('Erreur:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des favoris:', error);
+            });
+        }
+        
+        // Fonction pour afficher les favoris sous forme de liste à puces
+        function afficherFavorisEnListe(favoris) {
+            // Créer une div pour la liste
+            let listeDiv = document.createElement('div');
+            listeDiv.className = 'mt-3';
+            listeDiv.innerHTML = '<h4>Liste des favoris (format liste) :</h4>';
+            
+            if (favoris.length === 0) {
+                listeDiv.innerHTML += '<p class="text-muted">Aucun favori pour le moment.</p>';
+            } else {
+                // Créer une liste à puces
+                let ul = document.createElement('ul');
+                ul.className = 'list-group';
+                
+                favoris.forEach(favori => {
+                    let li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.innerHTML = `
+                        <strong>${favori.titre}</strong> par ${favori.auteur}
+                        <br>
+                        <small class="text-muted">${favori.description.substring(0, 100)}...</small>
+                        <br>
+                        <a href="?c=Recette&a=detail&id=${favori.recette_id}" class="btn btn-sm btn-primary mt-2">
+                            <i class="bi bi-eye"></i> Voir la recette
+                        </a>
+                    `;
+                    ul.appendChild(li);
+                });
+                
+                listeDiv.appendChild(ul);
+            }
+            
+            // Ajouter la liste au DOM (après le titre)
+            let titre = document.querySelector('h1');
+            if (titre && titre.nextSibling) {
+                titre.parentNode.insertBefore(listeDiv, titre.nextSibling);
+            }
+        }
+        
+        // Décommenter pour charger les favoris automatiquement au chargement de la page
+        // chargerFavoris();
+    }
 });

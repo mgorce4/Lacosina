@@ -101,6 +101,20 @@ class RecetteController{
         //utilisation du modèle pour récupérer les recettes
         $recettes = $this->recetteModel->findAll();
 
+        // Récupérer les IDs des favoris de l'utilisateur connecté
+        $favorisIds = [];
+        if (isset($_SESSION['user_id'])) {
+            require_once(__DIR__ . '/FavoriController.php');
+            $favoriController = new FavoriController();
+            // On va créer un tableau avec les IDs des recettes en favoris
+            require_once(__DIR__ . '/../Models/Favori.php');
+            $favoriModel = new Favori();
+            $favoris = $favoriModel->findByUserId($_SESSION['user_id']);
+            foreach ($favoris as $favori) {
+                $favorisIds[] = $favori['recette_id'];
+            }
+        }
+
         require_once(__DIR__ . '/../Views/Recette/liste.php');
     }
 
@@ -119,6 +133,14 @@ class RecetteController{
             }
         } else {
             $recette = null; // ID invalide
+        }
+
+        // Vérifier si la recette est dans les favoris de l'utilisateur connecté
+        $estDansFavoris = false;
+        if (isset($_SESSION['user_id']) && $recette) {
+            require_once(__DIR__ . '/FavoriController.php');
+            $favoriController = new FavoriController();
+            $estDansFavoris = $favoriController->existe($id, $_SESSION['user_id']);
         }
 
         require_once(__DIR__ . '/../Views/Recette/detail.php');
