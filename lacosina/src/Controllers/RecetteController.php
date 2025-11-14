@@ -143,6 +143,14 @@ class RecetteController{
             $estDansFavoris = $favoriController->existe($id, $_SESSION['user_id']);
         }
 
+        // Charger les commentaires de la recette
+        $commentaires = [];
+        if ($recette) {
+            require_once(__DIR__ . '/CommentaireController.php');
+            $commentaireController = new CommentaireController();
+            $commentaires = $commentaireController->lister($id);
+        }
+
         require_once(__DIR__ . '/../Views/Recette/detail.php');
     }
 
@@ -172,5 +180,64 @@ class RecetteController{
 
         require_once(__DIR__ . '/../Views/Recette/modif.php');
     }
+
+    //fonction permettant de supprimer une recette (admin uniquement)
+    function supprimer(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            $_SESSION['message'] = 'Vous n\'avez pas les droits pour supprimer une recette.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php');
+            exit;
+        }
+        
+        // Récupération et validation de l'ID depuis $_GET['id']
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if ($id <= 0) {
+            $_SESSION['message'] = 'ID de recette invalide.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php?c=Recette&a=lister');
+            exit;
+        }
+        
+        // Vérifier que la recette existe
+        $recette = $this->recetteModel->find($id);
+        if (!$recette) {
+            $_SESSION['message'] = 'Recette introuvable.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php?c=Recette&a=lister');
+            exit;
+        }
+        
+        // Supprimer d'abord les favoris associés
+        require_once(__DIR__ . '/../Models/Favori.php');
+        $favoriModel = new Favori();
+        $favoriModel->deleteByRecetteAndUser($id, null); // Supprimer tous les favoris de cette recette
+        
+        // Supprimer les commentaires associés
+        require_once(__DIR__ . '/../Models/Commentaire.php');
+        $commentaireModel = new Commentaire();
+        // On utilise findByRecetteId pour récupérer tous les commentaires puis les supprimer un par un
+        $commentaires = $commentaireModel->findByRecetteId($id);
+        foreach ($commentaires as $commentaire) {
+            $commentaireModel->delete($commentaire['id']);
+        }
+        
+        // Supprimer la recette
+        $resultat = $this->recetteModel->delete($id);
+        
+        if ($resultat) {
+            $_SESSION['message'] = 'Recette supprimée avec succès.';
+            $_SESSION['message_type'] = 'success';
+        } else {
+            $_SESSION['message'] = 'Erreur lors de la suppression de la recette.';
+            $_SESSION['message_type'] = 'danger';
+        }
+        
+        header('Location: index.php?c=Recette&a=lister');
+        exit;
+    }
 }
+
 

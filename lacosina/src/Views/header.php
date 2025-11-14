@@ -43,6 +43,11 @@
                             <li><a class="dropdown-item" href='?c=User&a=profil'>Mon profil</a></li>
                             <li><a class="dropdown-item" href='?c=Favori&a=liste'>Mes recettes favorites</a></li>
                             <li><a class="dropdown-item" href='?c=ajout'>Ajouter une recette</a></li>
+                            <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1): ?>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Administration</h6></li>
+                                <li><a class="dropdown-item" href='?c=Commentaire&a=liste'>Liste des commentaires</a></li>
+                            <?php endif; ?>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href='?c=User&a=deconnexion'>Déconnexion</a></li>
                         </ul>

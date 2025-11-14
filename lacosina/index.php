@@ -10,6 +10,7 @@ require_once(__DIR__ . '/src/Controllers/RecetteController.php');
 require_once(__DIR__ . '/src/Controllers/ContactController.php');
 require_once(__DIR__ . '/src/Controllers/UserController.php');
 require_once(__DIR__ . '/src/Controllers/FavoriController.php');
+require_once(__DIR__ . '/src/Controllers/CommentaireController.php');
 
 // routage double: c=contrôleur & a=action
 $controller = isset($_GET['c']) ? $_GET['c'] : 'home';
@@ -34,6 +35,7 @@ $recetteController = new RecetteController();
 $contactController = new ContactController();
 $userController = new UserController();
 $favoriController = new FavoriController();
+$commentaireController = new CommentaireController();
 
 switch ($controller) {
     case 'Recette':
@@ -55,8 +57,17 @@ switch ($controller) {
             case 'modifier':
                 $recetteController->modifier();
                 break;
+            case 'supprimer':
+                $recetteController->supprimer();
+                break;
             default:
-                echo "Action non trouvée pour le contrôleur Recette";
+                echo '<div class="alert alert-danger mt-4" role="alert">';
+                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                echo '<p>L\'action demandée n\'existe pas pour le contrôleur Recette.</p>';
+                echo '<hr>';
+                echo '<a href="?c=Recette&a=lister" class="btn btn-primary">Retour aux recettes</a> ';
+                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                echo '</div>';
         }   
         break;
         
@@ -127,7 +138,13 @@ switch ($controller) {
                 $userController->modifierProfil();
                 break;
             default:
-                echo "Action non trouvée pour le contrôleur User";
+                echo '<div class="alert alert-danger mt-4" role="alert">';
+                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                echo '<p>L\'action demandée n\'existe pas pour le contrôleur User.</p>';
+                echo '<hr>';
+                echo '<a href="?c=User&a=connexion" class="btn btn-primary">Se connecter</a> ';
+                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                echo '</div>';
         }
         break;
         
@@ -151,12 +168,48 @@ switch ($controller) {
                 $favoriController->toggle();
                 break;
             default:
-                echo "Action non trouvée pour le contrôleur Favori";
+                echo '<div class="alert alert-danger mt-4" role="alert">';
+                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                echo '<p>L\'action demandée n\'existe pas pour le contrôleur Favori.</p>';
+                echo '<hr>';
+                echo '<a href="?c=Favori&a=liste" class="btn btn-primary">Mes favoris</a> ';
+                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                echo '</div>';
+        }
+        break;
+        
+    case 'Commentaire':
+    case 'commentaire':
+        switch ($action) {
+            case 'liste':
+            case 'index':
+                $commentaireController->lister();
+                break;
+            case 'ajouter':
+                $commentaireController->ajouter();
+                break;
+            case 'supprimer':
+                $commentaireController->supprimer();
+                break;
+            default:
+                echo '<div class="alert alert-danger mt-4" role="alert">';
+                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                echo '<p>L\'action demandée n\'existe pas pour le contrôleur Commentaire.</p>';
+                echo '<hr>';
+                echo '<a href="?c=Commentaire&a=liste" class="btn btn-primary">Liste des commentaires</a> ';
+                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                echo '</div>';
         }
         break;
         
     default:
-        echo "Page non trouvée";
+        echo '<div class="alert alert-danger mt-4" role="alert">';
+        echo '<h4 class="alert-heading"><i class="bi bi-exclamation-octagon"></i> Page non trouvée</h4>';
+        echo '<p>La page ou le contrôleur demandé n\'existe pas.</p>';
+        echo '<hr>';
+        echo '<p class="mb-0"><a href="?c=home" class="btn btn-primary">Retour à l\'accueil</a> ';
+        echo '<a href="?c=Recette&a=lister" class="btn btn-secondary">Voir les recettes</a></p>';
+        echo '</div>';
 }
 
 // Afficher le footer seulement si ce n'est pas une action JSON

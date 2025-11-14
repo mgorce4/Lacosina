@@ -64,7 +64,84 @@
         </div>
     </div>
 
+    <!-- Section des commentaires -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Commentaires</h3>
+            
+            <!-- Bouton pour afficher le formulaire -->
+            <button id="btnAjouterCommentaire" class="btn btn-success mb-4">
+                <i class="bi bi-chat-left-text"></i> Ajouter un commentaire
+            </button>
+
+            <!-- Formulaire d'ajout de commentaire (caché par défaut) -->
+            <div id="formCommentaire" style="display: none;" class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Nouveau commentaire</h5>
+                    <form method="post" action="?c=Commentaire&a=ajouter">
+                        <input type="hidden" name="recette_id" value="<?php echo $recette['id']; ?>">
+                        <div class="mb-3">
+                            <label for="commentaire" class="form-label">Commentaire</label>
+                            <textarea class="form-control" id="commentaire" name="commentaire" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Valider le commentaire</button>
+                        <button type="button" id="btnAnnuler" class="btn btn-secondary">Annuler</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Liste des commentaires -->
+            <div class="commentaires-list">
+                <?php if (!empty($commentaires)): ?>
+                    <?php foreach ($commentaires as $commentaire): ?>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            <i class="bi bi-person-circle"></i> 
+                                            <?php echo htmlspecialchars($commentaire['pseudo']); ?>
+                                        </h6>
+                                        <p class="card-text"><?php echo nl2br(htmlspecialchars($commentaire['commentaire'])); ?></p>
+                                        <p class="text-muted small">
+                                            <i class="bi bi-clock"></i> 
+                                            <?php echo date('d/m/Y à H:i', strtotime($commentaire['create_time'])); ?>
+                                        </p>
+                                    </div>
+                                    <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1): ?>
+                                        <a href="?c=Commentaire&a=supprimer&id=<?php echo $commentaire['id']; ?>" 
+                                           class="btn btn-sm btn-danger" 
+                                           onclick="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="alert alert-info">
+                        Aucun commentaire sur cette recette
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
     <script>
+    // Gestion de l'affichage du formulaire de commentaire
+    document.getElementById('btnAjouterCommentaire').addEventListener('click', function() {
+        document.getElementById('formCommentaire').style.display = 'block';
+        this.style.display = 'none';
+        document.getElementById('commentaire').focus();
+    });
+
+    document.getElementById('btnAnnuler').addEventListener('click', function() {
+        document.getElementById('formCommentaire').style.display = 'none';
+        document.getElementById('btnAjouterCommentaire').style.display = 'block';
+        document.getElementById('commentaire').value = '';
+    });
+
     function ajouterAuxFavoris(recetteId) {
         if (!recetteId || recetteId <= 0) {
             alert('ID de recette invalide.');

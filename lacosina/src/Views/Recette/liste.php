@@ -27,6 +27,11 @@
                                 <span class="recipeedit" data-id="<?php echo $recipe['id']; ?>" style="cursor: pointer; font-size: 1.5rem; margin-left: 10px;" title="Modifier la recette">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </span>
+                                <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1): ?>
+                                    <span class="recipedelete" data-id="<?php echo $recipe['id']; ?>" style="cursor: pointer; font-size: 1.5rem; margin-left: 10px;" title="Supprimer la recette">
+                                        <i class="bi bi-trash text-danger"></i>
+                                    </span>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -77,6 +82,22 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Rediriger vers la page de modification
             window.location.href = `?c=Recette&a=modifier&id=${recetteId}`;
+        });
+    });
+
+    // Gestion des poubelles (suppression - admin uniquement)
+    let poubelles = document.querySelectorAll('.recipedelete');
+    
+    poubelles.forEach(poubelle => {
+        poubelle.addEventListener('click', function(e) {
+            e.stopPropagation(); // Empêcher la propagation vers la carte
+            let recetteId = this.dataset.id;
+            
+            // Confirmation avant suppression
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette recette ? Cette action est irréversible et supprimera également tous les favoris et commentaires associés.')) {
+                // Rediriger vers l'action de suppression
+                window.location.href = `?c=Recette&a=supprimer&id=${recetteId}`;
+            }
         });
     });
 });
