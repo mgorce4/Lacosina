@@ -1,5 +1,10 @@
 <?php
 
+// Activer l'affichage des erreurs temporairement pour le débogage
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // 0 pour ne pas afficher dans le navigateur
+ini_set('log_errors', 1);
+
 // Démarrer la session AVANT tout affichage
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -61,13 +66,19 @@ switch ($controller) {
                 $recetteController->supprimer();
                 break;
             default:
-                echo '<div class="alert alert-danger mt-4" role="alert">';
-                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
-                echo '<p>L\'action demandée n\'existe pas pour le contrôleur Recette.</p>';
-                echo '<hr>';
-                echo '<a href="?c=Recette&a=lister" class="btn btn-primary">Retour aux recettes</a> ';
-                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
-                echo '</div>';
+                if (!in_array($action, $jsonActions)) {
+                    echo '<div class="alert alert-danger mt-4" role="alert">';
+                    echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                    echo '<p>L\'action demandée n\'existe pas pour le contrôleur Recette.</p>';
+                    echo '<hr>';
+                    echo '<a href="?c=Recette&a=lister" class="btn btn-primary">Retour aux recettes</a> ';
+                    echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                    echo '</div>';
+                } else {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'message' => 'Action non trouvée']);
+                    exit;
+                }
         }   
         break;
         
@@ -138,13 +149,19 @@ switch ($controller) {
                 $userController->modifierProfil();
                 break;
             default:
-                echo '<div class="alert alert-danger mt-4" role="alert">';
-                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
-                echo '<p>L\'action demandée n\'existe pas pour le contrôleur User.</p>';
-                echo '<hr>';
-                echo '<a href="?c=User&a=connexion" class="btn btn-primary">Se connecter</a> ';
-                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
-                echo '</div>';
+                if (!in_array($action, $jsonActions)) {
+                    echo '<div class="alert alert-danger mt-4" role="alert">';
+                    echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                    echo '<p>L\'action demandée n\'existe pas pour le contrôleur User.</p>';
+                    echo '<hr>';
+                    echo '<a href="?c=User&a=connexion" class="btn btn-primary">Se connecter</a> ';
+                    echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                    echo '</div>';
+                } else {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'message' => 'Action non trouvée']);
+                    exit;
+                }
         }
         break;
         
@@ -168,13 +185,19 @@ switch ($controller) {
                 $favoriController->toggle();
                 break;
             default:
-                echo '<div class="alert alert-danger mt-4" role="alert">';
-                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
-                echo '<p>L\'action demandée n\'existe pas pour le contrôleur Favori.</p>';
-                echo '<hr>';
-                echo '<a href="?c=Favori&a=liste" class="btn btn-primary">Mes favoris</a> ';
-                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
-                echo '</div>';
+                if (!in_array($action, $jsonActions)) {
+                    echo '<div class="alert alert-danger mt-4" role="alert">';
+                    echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                    echo '<p>L\'action demandée n\'existe pas pour le contrôleur Favori.</p>';
+                    echo '<hr>';
+                    echo '<a href="?c=Favori&a=liste" class="btn btn-primary">Mes favoris</a> ';
+                    echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                    echo '</div>';
+                } else {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'message' => 'Action non trouvée']);
+                    exit;
+                }
         }
         break;
         
@@ -192,13 +215,19 @@ switch ($controller) {
                 $commentaireController->supprimer();
                 break;
             default:
-                echo '<div class="alert alert-danger mt-4" role="alert">';
-                echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
-                echo '<p>L\'action demandée n\'existe pas pour le contrôleur Commentaire.</p>';
-                echo '<hr>';
-                echo '<a href="?c=Commentaire&a=liste" class="btn btn-primary">Liste des commentaires</a> ';
-                echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
-                echo '</div>';
+                if (!in_array($action, $jsonActions)) {
+                    echo '<div class="alert alert-danger mt-4" role="alert">';
+                    echo '<h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Action non trouvée</h4>';
+                    echo '<p>L\'action demandée n\'existe pas pour le contrôleur Commentaire.</p>';
+                    echo '<hr>';
+                    echo '<a href="?c=Commentaire&a=liste" class="btn btn-primary">Liste des commentaires</a> ';
+                    echo '<a href="?c=home" class="btn btn-secondary">Retour à l\'accueil</a>';
+                    echo '</div>';
+                } else {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'message' => 'Action non trouvée']);
+                    exit;
+                }
         }
         break;
         

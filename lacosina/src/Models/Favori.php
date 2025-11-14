@@ -61,7 +61,8 @@ Class Favori {
         $stmt->bindParam(':user_id', $userId);
         $stmt->bindParam(':recette_id', $recetteId);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC) !== false;
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result !== false && $result !== null;
     }
 
     // Recherche générique avec paramètres
@@ -80,12 +81,21 @@ Class Favori {
 
     // Ajouter un favori
     public function add($recetteId, $userId){
-        $query = "INSERT INTO favoris (recette_id, user_id, create_time) VALUES (:recette_id, :user_id, NOW())";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':recette_id', $recetteId);
-        $stmt->bindParam(':user_id', $userId);
-        $stmt->execute();
-        return $this->conn->lastInsertId();
+        try {
+            $query = "INSERT INTO favoris (recette_id, user_id, create_time) VALUES (:recette_id, :user_id, NOW())";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':recette_id', $recetteId);
+            $stmt->bindParam(':user_id', $userId);
+            $stmt->execute();
+            return $this->conn->lastInsertId();
+        } catch (PDOException $e) {
+            // Si c'est une erreur de doublon (code 23000), retourner false
+            if ($e->getCode() == 23000) {
+                return false;
+            }
+            // Sinon, relancer l'exception
+            throw $e;
+        }
     }
 
     // Supprimer un favori par ID

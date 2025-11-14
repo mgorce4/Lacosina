@@ -18,52 +18,56 @@ class FavoriController{
         // Définir le header JSON
         header('Content-Type: application/json');
         
-        // Vérifier si l'utilisateur est connecté
-        if (!isset($_SESSION['user_id'])) {
-            echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour ajouter une recette aux favoris.']);
-            exit;
-        }
+        try {
+            // Vérifier si l'utilisateur est connecté
+            if (!isset($_SESSION['user_id'])) {
+                echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour ajouter une recette aux favoris.']);
+                exit;
+            }
 
-        // Récupérer les données
-        $userId = $_SESSION['user_id'];
-        $recetteId = isset($_GET['id']) ? intval($_GET['id']) : (isset($_POST['recette_id']) ? intval($_POST['recette_id']) : 0);
+            // Récupérer les données
+            $userId = $_SESSION['user_id'];
+            $recetteId = isset($_GET['id']) ? intval($_GET['id']) : (isset($_POST['recette_id']) ? intval($_POST['recette_id']) : 0);
 
-        // Vérifier que l'ID de la recette est valide
-        if ($recetteId <= 0) {
-            echo json_encode(['success' => false, 'message' => 'ID de recette invalide.']);
-            exit;
-        }
+            // Vérifier que l'ID de la recette est valide
+            if ($recetteId <= 0) {
+                echo json_encode(['success' => false, 'message' => 'ID de recette invalide.']);
+                exit;
+            }
 
-        // Vérifier que la recette existe
-        $recette = $this->recetteModel->find($recetteId);
-        if (!$recette) {
-            echo json_encode(['success' => false, 'message' => 'Cette recette n\'existe pas.']);
-            exit;
-        }
+            // Vérifier que la recette existe
+            $recette = $this->recetteModel->find($recetteId);
+            if (!$recette) {
+                echo json_encode(['success' => false, 'message' => 'Cette recette n\'existe pas.']);
+                exit;
+            }
 
-        // Vérifier si la recette n'est pas déjà dans les favoris (éviter les doublons)
-        $dejaDansFavoris = $this->favoriModel->isFavorite($userId, $recetteId);
-        
-        if ($dejaDansFavoris) {
-            echo json_encode(['success' => false, 'message' => 'Cette recette est déjà dans vos favoris.']);
-            exit;
-        }
-
-        // Ajouter aux favoris
-        $result = $this->favoriModel->add($recetteId, $userId);
-
-        if ($result) {
-            // Ajouter un message de succès dans la session
-            $_SESSION['message'] = 'Recette ajoutée aux favoris avec succès.';
-            $_SESSION['message_type'] = 'success';
+            // Vérifier si la recette n'est pas déjà dans les favoris (éviter les doublons)
+            $dejaDansFavoris = $this->favoriModel->isFavorite($userId, $recetteId);
             
-            echo json_encode([
-                'success' => true, 
-                'message' => 'Recette ajoutée aux favoris avec succès.',
-                'favori_id' => $result
-            ]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'ajout aux favoris.']);
+            if ($dejaDansFavoris) {
+                echo json_encode(['success' => false, 'message' => 'Cette recette est déjà dans vos favoris.']);
+                exit;
+            }
+
+            // Ajouter aux favoris
+            $result = $this->favoriModel->add($recetteId, $userId);
+
+            if ($result) {
+                // Ajouter un message de succès dans la session
+                $_SESSION['message'] = 'Recette ajoutée aux favoris avec succès.';
+                $_SESSION['message_type'] = 'success';
+                
+                echo json_encode([
+                    'success' => true, 
+                    'message' => 'Recette ajoutée aux favoris avec succès.',
+                    'favori_id' => $result
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'ajout aux favoris.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Erreur: ' . $e->getMessage()]);
         }
         exit;
     }
@@ -151,54 +155,58 @@ class FavoriController{
     //fonction permettant de basculer l'état favori (ajouter ou supprimer)
     function toggle(){
         // Définir le header JSON
-        header('Content-Type: application/json');
+        @header('Content-Type: application/json');
         
-        // Vérifier si l'utilisateur est connecté
-        if (!isset($_SESSION['user_id'])) {
-            echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour gérer vos favoris.']);
-            exit;
-        }
-
-        // Récupérer les données
-        $userId = $_SESSION['user_id'];
-        $recetteId = isset($_GET['id']) ? intval($_GET['id']) : (isset($_POST['recette_id']) ? intval($_POST['recette_id']) : 0);
-
-        // Vérifier que l'ID de la recette est valide
-        if ($recetteId <= 0) {
-            echo json_encode(['success' => false, 'message' => 'ID de recette invalide.']);
-            exit;
-        }
-
-        // Vérifier si la recette est déjà dans les favoris
-        $dejaDansFavoris = $this->favoriModel->isFavorite($userId, $recetteId);
-        
-        if ($dejaDansFavoris) {
-            // Supprimer des favoris
-            $result = $this->favoriModel->deleteByRecetteAndUser($recetteId, $userId);
-            if ($result) {
-                echo json_encode([
-                    'success' => true, 
-                    'action' => 'removed',
-                    'message' => 'Recette retirée des favoris.',
-                    'isFavorite' => false
-                ]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de la suppression.']);
+        try {
+            // Vérifier si l'utilisateur est connecté
+            if (!isset($_SESSION['user_id'])) {
+                echo json_encode(['success' => false, 'message' => 'Vous devez être connecté pour gérer vos favoris.']);
+                exit;
             }
-        } else {
-            // Ajouter aux favoris
-            $result = $this->favoriModel->add($recetteId, $userId);
-            if ($result) {
-                echo json_encode([
-                    'success' => true, 
-                    'action' => 'added',
-                    'message' => 'Recette ajoutée aux favoris.',
-                    'isFavorite' => true,
-                    'favori_id' => $result
-                ]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'ajout.']);
+
+            // Récupérer les données
+            $userId = $_SESSION['user_id'];
+            $recetteId = isset($_GET['id']) ? intval($_GET['id']) : (isset($_POST['recette_id']) ? intval($_POST['recette_id']) : 0);
+
+            // Vérifier que l'ID de la recette est valide
+            if ($recetteId <= 0) {
+                echo json_encode(['success' => false, 'message' => 'ID de recette invalide.']);
+                exit;
             }
+
+            // Vérifier si la recette est déjà dans les favoris
+            $dejaDansFavoris = $this->favoriModel->isFavorite($userId, $recetteId);
+            
+            if ($dejaDansFavoris) {
+                // Supprimer des favoris
+                $result = $this->favoriModel->deleteByRecetteAndUser($recetteId, $userId);
+                if ($result) {
+                    echo json_encode([
+                        'success' => true, 
+                        'action' => 'removed',
+                        'message' => 'Recette retirée des favoris.',
+                        'isFavorite' => false
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Erreur lors de la suppression.']);
+                }
+            } else {
+                // Ajouter aux favoris
+                $result = $this->favoriModel->add($recetteId, $userId);
+                if ($result) {
+                    echo json_encode([
+                        'success' => true, 
+                        'action' => 'added',
+                        'message' => 'Recette ajoutée aux favoris.',
+                        'isFavorite' => true,
+                        'favori_id' => $result
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'ajout.']);
+                }
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Erreur: ' . $e->getMessage()]);
         }
         exit;
     }
