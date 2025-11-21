@@ -1,4 +1,33 @@
-<div class="row">
+<!-- Filtres de type de plat -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex gap-3 justify-content-center">
+            <div class="card filter-card bg-primary-subtle" data-filter="all" style="cursor: pointer; min-width: 150px;">
+                <div class="card-body text-center py-2">
+                    <i class="bi bi-grid-3x3-gap-fill"></i> Toutes les recettes
+                </div>
+            </div>
+            <div class="card filter-card" data-filter="entree" style="cursor: pointer; min-width: 150px;">
+                <div class="card-body text-center py-2">
+                    <i class="bi bi-egg-fried"></i> Entrées
+                </div>
+            </div>
+            <div class="card filter-card" data-filter="plat" style="cursor: pointer; min-width: 150px;">
+                <div class="card-body text-center py-2">
+                    <i class="bi bi-dish-fill"></i> Plats
+                </div>
+            </div>
+            <div class="card filter-card" data-filter="dessert" style="cursor: pointer; min-width: 150px;">
+                <div class="card-body text-center py-2">
+                    <i class="bi bi-cake2-fill"></i> Desserts
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Liste des recettes -->
+<div class="row" id="listeRecettes">
     <?php foreach ($recettes as $recipe) :
         // Vérifier si la recette est dans les favoris
         $estDansFavoris = isset($favorisIds) && in_array($recipe['id'], $favorisIds);
@@ -42,8 +71,8 @@
 </div>
 
 <script>
-// Gestion du clic sur les coeurs et les crayons
-document.addEventListener('DOMContentLoaded', function() {
+// Fonction pour initialiser les événements sur les recettes
+function initRecetteEvents() {
     // Gestion des coeurs (favoris)
     let coeurs = document.querySelectorAll('.recipefav');
     
@@ -100,5 +129,76 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // Gestion du clic sur les cartes de recettes
+    let cards = document.querySelectorAll('.recipe');
+    cards.forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', function() {
+            let recetteId = this.dataset.id;
+            window.location.href = `?c=Recette&a=detail&id=${recetteId}`;
+        });
+    });
+}
+
+// Gestion des filtres
+function initFilters() {
+    let filterCards = document.querySelectorAll('.filter-card');
+    
+    filterCards.forEach(card => {
+        card.addEventListener('mouseover', function() {
+            if (!this.classList.contains('bg-primary-subtle')) {
+                this.classList.add('bg-light');
+            }
+        });
+        
+        card.addEventListener('mouseout', function() {
+            if (!this.classList.contains('bg-primary-subtle')) {
+                this.classList.remove('bg-light');
+            }
+        });
+        
+        card.addEventListener('click', function() {
+            let filter = this.dataset.filter;
+            
+            // Retirer la classe active de tous les filtres
+            filterCards.forEach(f => f.classList.remove('bg-primary-subtle'));
+            
+            // Ajouter la classe active au filtre cliqué
+            this.classList.add('bg-primary-subtle');
+            
+            // Charger les recettes filtrées
+            let url = filter === 'all' ? 'index.php?c=Recette&a=index' : `index.php?c=Recette&a=index&filtre=${filter}`;
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    // Parser le HTML
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Récupérer la div listeRecettes
+                    let nouvelleListe = doc.querySelector('#listeRecettes');
+                    
+                    if (nouvelleListe) {
+                        // Remplacer le contenu
+                        document.getElementById('listeRecettes').innerHTML = nouvelleListe.innerHTML;
+                        
+                        // Réinitialiser les événements
+                        initRecetteEvents();
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors du filtrage:', error);
+                    alert('Une erreur est survenue lors du filtrage des recettes.');
+                });
+        });
+    });
+}
+
+// Initialisation au chargement du DOM
+document.addEventListener('DOMContentLoaded', function() {
+    initRecetteEvents();
+    initFilters();
 });
 </script>

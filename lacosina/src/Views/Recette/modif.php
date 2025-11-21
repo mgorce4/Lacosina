@@ -15,6 +15,15 @@
     </div>
 
     <div class="mb-3">
+        <label for="type_plat" class="form-label">Type de plat</label>
+        <select class="form-select" name="type_plat" id="type_plat" required>
+            <option value="entree" <?php echo (isset($recette['type_plat']) && $recette['type_plat'] == 'entree') ? 'selected' : ''; ?>>Entrée</option>
+            <option value="plat" <?php echo (isset($recette['type_plat']) && $recette['type_plat'] == 'plat') ? 'selected' : ''; ?>>Plat</option>
+            <option value="dessert" <?php echo (isset($recette['type_plat']) && $recette['type_plat'] == 'dessert') ? 'selected' : ''; ?>>Dessert</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
         <label for="image" class="form-label">Image de la recette <br>(pour la modifier merci de choisir la nouvelle image)</label>
         
         <div class="mb-2">

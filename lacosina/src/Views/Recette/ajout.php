@@ -14,6 +14,14 @@
         <textarea class="form-control" name="description" id="description" rows="3" required></textarea>
     </div>
     <div class="mb-3">
+        <label for="type_plat" class="form-label">Type de plat</label>
+        <select class="form-select" name="type_plat" id="type_plat" required>
+            <option value="entree">Entrée</option>
+            <option value="plat">Plat</option>
+            <option value="dessert">Dessert</option>
+        </select>
+    </div>
+    <div class="mb-3">
         <label for="ingredients" class="form-label">Mail de l'auteur</label>
         <textarea class="form-control" name="auteur" id="auteur"  required></textarea>
     </div>

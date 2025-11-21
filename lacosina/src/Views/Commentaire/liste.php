@@ -23,8 +23,6 @@
                     <tbody>
                         <?php foreach ($commentaires as $commentaire): 
                             // Récupérer les informations de la recette
-                            require_once(__DIR__ . '/../../Models/Recette.php');
-                            $recetteModel = new Recette();
                             $recette = $recetteModel->find($commentaire['recette_id']);
                         ?>
                             <tr>

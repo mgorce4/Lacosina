@@ -1,6 +1,9 @@
 <?php
 
-require_once __DIR__ . '/Database.php';
+namespace App\Models;
+
+use PDO;
+use PDOException;
 
 Class Favori {
     private $conn;

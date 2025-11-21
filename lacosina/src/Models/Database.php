@@ -1,4 +1,10 @@
 <?php
+
+namespace App\Models;
+
+use PDO;
+use PDOException;
+
 Class Database{
     private $host = 'db';              // Host Docker pour MariaDB
     private $port = '3306';            // Port MySQL/MariaDB

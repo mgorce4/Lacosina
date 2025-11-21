@@ -1,8 +1,10 @@
 <?php
 
-//connexion à la base de données
-require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Models'.DIRECTORY_SEPARATOR.'Favori.php');
-require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Models'.DIRECTORY_SEPARATOR.'Recette.php');
+namespace App\Controllers;
+
+use App\Models\Favori;
+use App\Models\Recette;
+use Exception;
 
 class FavoriController{
     private $favoriModel;

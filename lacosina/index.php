@@ -1,5 +1,15 @@
 <?php
 
+// Charger l'autoload
+require_once(__DIR__ . '/autoload.php');
+
+// Utiliser les namespaces
+use App\Controllers\RecetteController;
+use App\Controllers\ContactController;
+use App\Controllers\UserController;
+use App\Controllers\FavoriController;
+use App\Controllers\CommentaireController;
+
 // Activer l'affichage des erreurs temporairement pour le débogage
 error_reporting(E_ALL);
 ini_set('display_errors', 0); // 0 pour ne pas afficher dans le navigateur
@@ -9,13 +19,6 @@ ini_set('log_errors', 1);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-//import des classes contrôleurs
-require_once(__DIR__ . '/src/Controllers/RecetteController.php');
-require_once(__DIR__ . '/src/Controllers/ContactController.php');
-require_once(__DIR__ . '/src/Controllers/UserController.php');
-require_once(__DIR__ . '/src/Controllers/FavoriController.php');
-require_once(__DIR__ . '/src/Controllers/CommentaireController.php');
 
 // routage double: c=contrôleur & a=action
 $controller = isset($_GET['c']) ? $_GET['c'] : 'home';

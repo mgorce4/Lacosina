@@ -1,6 +1,8 @@
 <?php
 
-require_once(__DIR__ . '/../Models/Contact.php');
+namespace App\Controllers;
+
+use App\Models\Contact;
 
 class ContactController{
     

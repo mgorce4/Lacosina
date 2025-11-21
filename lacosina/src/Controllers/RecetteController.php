@@ -1,7 +1,10 @@
 <?php
 
-//connexion à la base de données
-require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Models'.DIRECTORY_SEPARATOR.'Recette.php');
+namespace App\Controllers;
+
+use App\Models\Recette;
+use App\Models\Favori;
+use App\Models\Commentaire;
 
 class RecetteController{
     private $recetteModel;
@@ -35,6 +38,7 @@ class RecetteController{
         $titre = $_POST['titre'];
         $description = $_POST['description'];
         $auteur = $_POST['auteur'];
+        $type_plat = isset($_POST['type_plat']) ? $_POST['type_plat'] : 'entree';
         $image = isset($_FILES['image']) ? $_FILES['image'] : null;
         
         // Vérifier s'il s'agit d'une modification (présence d'un ID)
@@ -76,7 +80,7 @@ class RecetteController{
         // Choisir entre création ou modification
         if ($isModification) {
             // Modification de la recette existante
-            $resultat = $this->recetteModel->update($id, $titre, $description, $auteur, $imagePath);
+            $resultat = $this->recetteModel->update($id, $titre, $description, $auteur, $imagePath, $type_plat);
             
             if ($resultat) {
                 // Affichage de la vue de confirmation de modification
@@ -86,7 +90,7 @@ class RecetteController{
             }
         } else {
             // Création d'une nouvelle recette
-            $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath);
+            $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath, $type_plat);
 
             if ($resultat){
                 require_once(__DIR__ . '/../Views/Recette/enregistrer.php');
@@ -98,16 +102,19 @@ class RecetteController{
 
     //fonction permettant de lister toutes les recettes
     function index(){
-        //utilisation du modèle pour récupérer les recettes
-        $recettes = $this->recetteModel->findAll();
+        // Vérifier s'il y a un filtre
+        $filtre = isset($_GET['filtre']) ? $_GET['filtre'] : null;
+        
+        // Utilisation du modèle pour récupérer les recettes
+        if ($filtre && in_array($filtre, ['entree', 'plat', 'dessert'])) {
+            $recettes = $this->recetteModel->findBy(['type_plat' => $filtre]);
+        } else {
+            $recettes = $this->recetteModel->findAll();
+        }
 
         // Récupérer les IDs des favoris de l'utilisateur connecté
         $favorisIds = [];
         if (isset($_SESSION['user_id'])) {
-            require_once(__DIR__ . '/FavoriController.php');
-            $favoriController = new FavoriController();
-            // On va créer un tableau avec les IDs des recettes en favoris
-            require_once(__DIR__ . '/../Models/Favori.php');
             $favoriModel = new Favori();
             $favoris = $favoriModel->findByUserId($_SESSION['user_id']);
             foreach ($favoris as $favori) {
@@ -138,17 +145,15 @@ class RecetteController{
         // Vérifier si la recette est dans les favoris de l'utilisateur connecté
         $estDansFavoris = false;
         if (isset($_SESSION['user_id']) && $recette) {
-            require_once(__DIR__ . '/FavoriController.php');
-            $favoriController = new FavoriController();
-            $estDansFavoris = $favoriController->existe($id, $_SESSION['user_id']);
+            $favoriModel = new Favori();
+            $estDansFavoris = $favoriModel->isFavorite($_SESSION['user_id'], $id);
         }
 
         // Charger les commentaires de la recette
         $commentaires = [];
         if ($recette) {
-            require_once(__DIR__ . '/CommentaireController.php');
-            $commentaireController = new CommentaireController();
-            $commentaires = $commentaireController->lister($id);
+            $commentaireModel = new Commentaire();
+            $commentaires = $commentaireModel->findByRecetteId($id);
         }
 
         require_once(__DIR__ . '/../Views/Recette/detail.php');
@@ -211,12 +216,10 @@ class RecetteController{
         }
         
         // Supprimer d'abord les favoris associés
-        require_once(__DIR__ . '/../Models/Favori.php');
         $favoriModel = new Favori();
         $favoriModel->deleteByRecetteAndUser($id, null); // Supprimer tous les favoris de cette recette
         
         // Supprimer les commentaires associés
-        require_once(__DIR__ . '/../Models/Commentaire.php');
         $commentaireModel = new Commentaire();
         // On utilise findByRecetteId pour récupérer tous les commentaires puis les supprimer un par un
         $commentaires = $commentaireModel->findByRecetteId($id);

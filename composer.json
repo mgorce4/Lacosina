@@ -1,0 +1,10 @@
+{
+    "name": "app/r301",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\Controllers\\": "lacosina/src/Controllers/",
+            "App\\Models\\": "lacosina/src/Models/"
+        }
+    }
+}

@@ -1,7 +1,9 @@
 <?php
 
-//connexion à la base de données
-require_once(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Models'.DIRECTORY_SEPARATOR.'Commentaire.php');
+namespace App\Controllers;
+
+use App\Models\Commentaire;
+use App\Models\Recette;
 
 class CommentaireController{
     private $commentaireModel;
@@ -72,6 +74,9 @@ class CommentaireController{
             header('Location: index.php');
             exit;
         }
+        
+        // Instancier le modèle Recette pour la vue
+        $recetteModel = new Recette();
         
         require_once(__DIR__ . '/../Views/Commentaire/liste.php');
     }
