@@ -5,9 +5,7 @@
         </h1>
         
         <?php 
-        // Récupérer tous les commentaires avec les informations de la recette
-        $commentaires = $this->commentaireModel->findAll();
-        
+        // La variable $commentaires est passée depuis le contrôleur
         if (!empty($commentaires)): ?>
             <div class="table-responsive">
                 <table class="table table-striped table-hover">

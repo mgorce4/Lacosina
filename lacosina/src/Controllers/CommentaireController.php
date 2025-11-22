@@ -61,7 +61,7 @@ class CommentaireController{
     }
 
     //fonction permettant de lister les commentaires d'une recette
-    function lister($recetteId = null){
+    function liste($recetteId = null){
         // Si un recetteId est fourni, c'est pour une recette spécifique
         if ($recetteId !== null) {
             return $this->commentaireModel->findByRecetteId($recetteId);
@@ -75,10 +75,18 @@ class CommentaireController{
             exit;
         }
         
+        // Récupérer tous les commentaires
+        $commentaires = $this->commentaireModel->findAll();
+        
         // Instancier le modèle Recette pour la vue
         $recetteModel = new Recette();
         
         require_once(__DIR__ . '/../Views/Commentaire/liste.php');
+    }
+    
+    //alias pour compatibilité
+    function lister($recetteId = null){
+        return $this->liste($recetteId);
     }
 
     //fonction permettant de supprimer un commentaire
