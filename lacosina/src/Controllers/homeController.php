@@ -1,4 +1,11 @@
 <?php
-    require_once
-__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR."Views".DIRECTORY_SEPARATOR.'home.php';
-?>
+
+namespace App\Controllers;
+
+class homeController{
+    
+    //fonction permettant d'afficher la page d'accueil
+    public function index(){
+        require_once(__DIR__ . '/../Views/home.php');
+    }
+}

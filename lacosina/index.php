@@ -7,7 +7,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/autoload.php';
 }
 
-use App\Controllers\{RecetteController, ContactController, UserController, FavoriController, CommentaireController};
+use App\Controllers\{RecetteController, ContactController, UserController, FavoriController, CommentaireController, homeController};
 
 // Configuration
 error_reporting(E_ALL);
@@ -34,6 +34,7 @@ try {
     
     // Mapping contrôleur => classe
     $controllers = [
+        'home' => homeController::class,
         'recette' => RecetteController::class,
         'contact' => ContactController::class,
         'user' => UserController::class,
@@ -50,9 +51,7 @@ try {
         'detail' => [RecetteController::class, 'detail'],
     ];
     
-    if ($ctrl === 'home') {
-        require_once __DIR__ . '/src/Controllers/homeController.php';
-    } elseif (isset($legacyRoutes[$ctrl])) {
+    if (isset($legacyRoutes[$ctrl])) {
         [$class, $method] = $legacyRoutes[$ctrl];
         (new $class)->$method();
     } elseif (isset($controllers[$ctrl])) {
