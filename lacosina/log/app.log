@@ -1,1 +1,8 @@
 [2025-12-01T21:22:35.350949+00:00] lacosina.INFO: Connexion utilisateur {"user_id":1,"identifiant":"admin","ip":"172.18.0.1"} []
+[2025-12-01T21:27:32.904064+00:00] lacosina.INFO: Connexion utilisateur {"user_id":1,"identifiant":"admin","ip":"172.18.0.1"} []
+[2025-12-01T21:29:13.370674+00:00] lacosina.INFO: Déconnexion utilisateur {"user_id":1,"identifiant":"admin","ip":"172.18.0.1"} []
+[2025-12-01T21:29:49.175335+00:00] lacosina.INFO: Connexion utilisateur {"user_id":1,"identifiant":"admin","ip":"172.18.0.1"} []
+[2025-12-01T21:30:14.708152+00:00] lacosina.INFO: Création de recette {"titre":"bib","auteur":"pozeo@fr.fr","type_plat":"entree","user_id":1} []
+[2025-12-01T21:30:29.665547+00:00] lacosina.INFO: Suppression de recette {"recette_id":9,"titre":"bib","user_id":1,"admin":"admin"} []
+[2025-12-01T21:32:12.118755+00:00] lacosina.INFO: Création de recette {"titre":"xw","auteur":"xqsq","type_plat":"entree","user_id":1} []
+[2025-12-01T21:32:20.960265+00:00] lacosina.INFO: Suppression de recette {"recette_id":10,"titre":"xw","user_id":1,"admin":"admin"} []

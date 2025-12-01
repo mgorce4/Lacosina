@@ -223,7 +223,7 @@ class RecetteController{
         if ($id <= 0) {
             $_SESSION['message'] = 'ID de recette invalide.';
             $_SESSION['message_type'] = 'danger';
-            header('Location: index.php?c=Recette&a=lister');
+            header('Location: index.php?c=Recette&a=index');
             exit;
         }
         
@@ -232,7 +232,7 @@ class RecetteController{
         if (!$recette) {
             $_SESSION['message'] = 'Recette introuvable.';
             $_SESSION['message_type'] = 'danger';
-            header('Location: index.php?c=Recette&a=lister');
+            header('Location: index.php?c=Recette&a=index');
             exit;
         }
         
@@ -269,7 +269,7 @@ class RecetteController{
             $_SESSION['message_type'] = 'danger';
         }
         
-        header('Location: index.php?c=Recette&a=lister');
+        header('Location: index.php?c=Recette&a=index');
         exit;
     }
 
