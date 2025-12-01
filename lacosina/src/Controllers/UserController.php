@@ -77,6 +77,15 @@ class UserController{
             $_SESSION['mail'] = $user['mail'];
             $_SESSION['isAdmin'] = $user['isAdmin'];
             
+            // Journalisation de la connexion
+            if (isset($GLOBALS['logger'])) {
+                $GLOBALS['logger']->info('Connexion utilisateur', [
+                    'user_id' => $user['id'],
+                    'identifiant' => $user['identifiant'],
+                    'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+                ]);
+            }
+            
             // Redirection vers la page d'accueil
             echo '<div class="alert alert-success">Connexion réussie ! Bienvenue ' . htmlspecialchars($user['identifiant']) . '</div>';
             echo '<script>setTimeout(function(){ window.location.href = "index.php"; }, 2000);</script>';
@@ -95,6 +104,15 @@ class UserController{
 
     //fonction permettant de déconnecter un utilisateur
     function deconnexion(){
+        // Journalisation de la déconnexion
+        if (isset($GLOBALS['logger']) && isset($_SESSION['user_id'])) {
+            $GLOBALS['logger']->info('Déconnexion utilisateur', [
+                'user_id' => $_SESSION['user_id'],
+                'identifiant' => $_SESSION['identifiant'] ?? 'unknown',
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            ]);
+        }
+        
         // Supprimer la session à l'aide de session_destroy()
         session_unset();
         session_destroy();

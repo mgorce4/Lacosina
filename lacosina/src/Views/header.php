@@ -14,6 +14,7 @@
     <!-- Scripts JavaScript personnalisés -->
     <script src="./src/Views/js/recipes.js" defer></script>
     <script src="./src/Views/js/users.js" defer></script>
+    <script src="./src/Views/js/search.js" defer></script>
 </head>
 <body>
     <!-- menu de navigation -->
@@ -30,6 +31,10 @@
                     <a class="nav-link" href='?c=contact'>Contact</a>
                 </li>
             </ul>
+            <!-- Zone de recherche -->
+            <form class="d-flex me-3" role="search">
+                <input class="form-control" type="search" id="search" placeholder="Rechercher une recette..." aria-label="Search">
+            </form>
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <?php
                 // Vérifier si l'utilisateur est connecté

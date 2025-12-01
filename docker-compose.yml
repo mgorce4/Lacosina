@@ -8,6 +8,7 @@ services:
       - db
     volumes:
       - ./lacosina:/var/www/html/
+      - ./vendor:/var/www/vendor/
     ports:
       - 80:80
 

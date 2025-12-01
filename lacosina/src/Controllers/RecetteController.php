@@ -83,6 +83,17 @@ class RecetteController{
             $resultat = $this->recetteModel->update($id, $titre, $description, $auteur, $imagePath, $type_plat);
             
             if ($resultat) {
+                // Journalisation de la modification
+                if (isset($GLOBALS['logger'])) {
+                    $GLOBALS['logger']->info('Modification de recette', [
+                        'recette_id' => $id,
+                        'titre' => $titre,
+                        'auteur' => $auteur,
+                        'type_plat' => $type_plat,
+                        'user_id' => $_SESSION['user_id'] ?? 'unknown'
+                    ]);
+                }
+                
                 // Affichage de la vue de confirmation de modification
                 require_once(__DIR__ . '/../Views/Recette/modifie.php');
             } else {
@@ -93,6 +104,16 @@ class RecetteController{
             $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath, $type_plat);
 
             if ($resultat){
+                // Journalisation de la création
+                if (isset($GLOBALS['logger'])) {
+                    $GLOBALS['logger']->info('Création de recette', [
+                        'titre' => $titre,
+                        'auteur' => $auteur,
+                        'type_plat' => $type_plat,
+                        'user_id' => $_SESSION['user_id'] ?? 'unknown'
+                    ]);
+                }
+                
                 require_once(__DIR__ . '/../Views/Recette/enregistrer.php');
             } else {
                 echo 'Erreur lors de l\'enregistrement de la recette.';
@@ -231,6 +252,16 @@ class RecetteController{
         $resultat = $this->recetteModel->delete($id);
         
         if ($resultat) {
+            // Journalisation de la suppression
+            if (isset($GLOBALS['logger'])) {
+                $GLOBALS['logger']->info('Suppression de recette', [
+                    'recette_id' => $id,
+                    'titre' => $recette['titre'],
+                    'user_id' => $_SESSION['user_id'] ?? 'unknown',
+                    'admin' => $_SESSION['identifiant'] ?? 'unknown'
+                ]);
+            }
+            
             $_SESSION['message'] = 'Recette supprimée avec succès.';
             $_SESSION['message_type'] = 'success';
         } else {
@@ -241,6 +272,21 @@ class RecetteController{
         header('Location: index.php?c=Recette&a=lister');
         exit;
     }
+
+    //fonction permettant de retourner toutes les recettes au format JSON
+    function indexJSON(){
+        // Définir le header pour indiquer du JSON
+        header('Content-Type: application/json');
+        
+        // Récupérer toutes les recettes
+        $recettes = $this->recetteModel->findAll();
+        
+        // Retourner les recettes en JSON
+        echo json_encode($recettes);
+        exit;
+    }
 }
+
+
 
 

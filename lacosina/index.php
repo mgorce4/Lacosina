@@ -3,11 +3,20 @@
 // Autoloader
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
-} else {
-    require_once __DIR__ . '/autoload.php';
 }
+// Autoloader local pour les classes App
+require_once __DIR__ . '/autoload.php';
 
 use App\Controllers\{RecetteController, ContactController, UserController, FavoriController, CommentaireController, homeController};
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+// Configuration du logger
+$logger = new Logger('lacosina');
+$logger->pushHandler(new StreamHandler(__DIR__ . '/log/app.log', Logger::INFO));
+
+// Rendre le logger accessible globalement
+$GLOBALS['logger'] = $logger;
 
 // Configuration
 error_reporting(E_ALL);
@@ -22,7 +31,7 @@ $controller = $_GET['c'] ?? 'home';
 $action = $_GET['a'] ?? 'index';
 
 // Actions JSON (sans header/footer)
-$jsonActions = ['getFavoris', 'modifierProfil', 'ajouter', 'supprimer', 'toggle'];
+$jsonActions = ['getFavoris', 'modifierProfil', 'ajouter', 'supprimer', 'toggle', 'indexJSON'];
 $isJson = in_array($action, $jsonActions);
 
 // Header
