@@ -203,4 +203,87 @@ document.addEventListener('DOMContentLoaded', () => {
         // Décommenter pour charger les favoris automatiquement au chargement de la page
         // chargerFavoris();
     }
+
+    // ===== NOTIFICATIONS POUR LES RECETTES À APPROUVER (ADMIN UNIQUEMENT) =====
+    // Fonction pour afficher les notifications de recettes en attente
+    async function afficherNotificationsAdmin() {
+        try {
+            // Appeler l'API pour obtenir le nombre de recettes non validées
+            const response = await fetch('?c=Recette&a=compterNonValidees');
+            const data = await response.json();
+            
+            const count = data.count || 0;
+            
+            // Afficher le badge dans le menu
+            if (count > 0) {
+                const badgeMenu = document.getElementById('badge-recettes-menu');
+                if (badgeMenu) {
+                    badgeMenu.textContent = count;
+                    badgeMenu.style.display = 'inline-block';
+                }
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement des notifications de recettes:', error);
+        }
+    }
+
+    // ===== NOTIFICATIONS POUR LES COMMENTAIRES À APPROUVER (ADMIN UNIQUEMENT) =====
+    // Fonction pour afficher les notifications de commentaires en attente
+    async function afficherNotificationsCommentaires() {
+        try {
+            // Appeler l'API pour obtenir le nombre de commentaires non validés
+            const response = await fetch('?c=Commentaire&a=compterNonValidees');
+            const data = await response.json();
+            
+            const count = data.count || 0;
+            
+            // Afficher le badge dans le menu
+            if (count > 0) {
+                const badgeMenu = document.getElementById('badge-commentaires-menu');
+                if (badgeMenu) {
+                    badgeMenu.textContent = count;
+                    badgeMenu.style.display = 'inline-block';
+                }
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement des notifications de commentaires:', error);
+        }
+    }
+
+    // ===== BADGE TOTAL SUR LE PROFIL ADMIN =====
+    // Fonction pour afficher le badge total sur le bouton du profil admin
+    async function afficherBadgeTotalAdmin() {
+        try {
+            // Récupérer les deux compteurs en parallèle
+            const [recettesResponse, commentairesResponse] = await Promise.all([
+                fetch('?c=Recette&a=compterNonValidees'),
+                fetch('?c=Commentaire&a=compterNonValidees')
+            ]);
+            
+            const recettesData = await recettesResponse.json();
+            const commentairesData = await commentairesResponse.json();
+            
+            const totalCount = (recettesData.count || 0) + (commentairesData.count || 0);
+            
+            // Afficher le badge sur le bouton du profil (juste un point rouge sans chiffre)
+            if (totalCount > 0) {
+                const badgeProfil = document.getElementById('badge-profil-admin');
+                if (badgeProfil) {
+                    badgeProfil.style.display = 'inline-block';
+                }
+            }
+        } catch (error) {
+            console.error('Erreur lors du chargement du badge total admin:', error);
+        }
+    }
+
+    // Vérifier si l'utilisateur est admin en vérifiant l'existence du badge profil admin
+    const badgeProfilAdmin = document.getElementById('badge-profil-admin');
+    if (badgeProfilAdmin) {
+        // L'utilisateur est admin, charger les notifications
+        afficherNotificationsAdmin();
+        afficherNotificationsCommentaires();
+        afficherBadgeTotalAdmin();
+    }
 });
+

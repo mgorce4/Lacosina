@@ -101,7 +101,9 @@ class RecetteController{
             }
         } else {
             // Création d'une nouvelle recette
-            $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath, $type_plat);
+            // Si l'utilisateur est admin, la recette est approuvée directement
+            $isApproved = (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1) ? 1 : 0;
+            $resultat = $this->recetteModel->add($titre, $description, $auteur, $imagePath, $type_plat, $isApproved);
 
             if ($resultat){
                 // Journalisation de la création
@@ -110,6 +112,7 @@ class RecetteController{
                         'titre' => $titre,
                         'auteur' => $auteur,
                         'type_plat' => $type_plat,
+                        'isApproved' => $isApproved,
                         'user_id' => $_SESSION['user_id'] ?? 'unknown'
                     ]);
                 }
@@ -126,11 +129,18 @@ class RecetteController{
         // Vérifier s'il y a un filtre
         $filtre = isset($_GET['filtre']) ? $_GET['filtre'] : null;
         
+        // Les admins voient toutes les recettes, les autres uniquement les approuvées
+        $isAdmin = (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1);
+        
         // Utilisation du modèle pour récupérer les recettes
         if ($filtre && in_array($filtre, ['entree', 'plat', 'dessert'])) {
             $recettes = $this->recetteModel->findBy(['type_plat' => $filtre]);
+            // Filtrer pour les non-admins
+            if (!$isAdmin) {
+                $recettes = array_filter($recettes, function($r) { return $r['isApproved'] == 1; });
+            }
         } else {
-            $recettes = $this->recetteModel->findAll();
+            $recettes = $isAdmin ? $this->recetteModel->findAll() : $this->recetteModel->findAllApproved();
         }
 
         // Récupérer les IDs des favoris de l'utilisateur connecté
@@ -278,14 +288,169 @@ class RecetteController{
         // Définir le header pour indiquer du JSON
         header('Content-Type: application/json');
         
-        // Récupérer toutes les recettes
-        $recettes = $this->recetteModel->findAll();
+        // Les admins voient toutes les recettes, les autres uniquement les approuvées
+        $isAdmin = (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1);
+        $recettes = $isAdmin ? $this->recetteModel->findAll() : $this->recetteModel->findAllApproved();
         
         // Retourner les recettes en JSON
         echo json_encode($recettes);
         exit;
     }
+
+    //fonction permettant d'afficher les recettes en attente d'approbation (admin uniquement)
+    function attente(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            $_SESSION['message'] = 'Vous n\'avez pas les droits pour accéder à cette page.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php');
+            exit;
+        }
+        
+        // Récupérer les recettes en attente
+        $recettesEnAttente = $this->recetteModel->findAllPending();
+        
+        require_once(__DIR__ . '/../Views/Recette/attente.php');
+    }
+
+    //fonction permettant d'approuver une recette (admin uniquement)
+    function approuver(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            $_SESSION['message'] = 'Vous n\'avez pas les droits pour effectuer cette action.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php');
+            exit;
+        }
+        
+        // Récupérer l'ID de la recette
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if ($id <= 0) {
+            $_SESSION['message'] = 'ID de recette invalide.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php?c=Recette&a=attente');
+            exit;
+        }
+        
+        // Approuver la recette
+        $resultat = $this->recetteModel->approve($id);
+        
+        if ($resultat) {
+            // Journalisation
+            if (isset($GLOBALS['logger'])) {
+                $GLOBALS['logger']->info('Approbation de recette', [
+                    'recette_id' => $id,
+                    'admin' => $_SESSION['identifiant'] ?? 'unknown'
+                ]);
+            }
+            
+            $_SESSION['message'] = 'Recette approuvée avec succès.';
+            $_SESSION['message_type'] = 'success';
+        } else {
+            $_SESSION['message'] = 'Erreur lors de l\'approbation de la recette.';
+            $_SESSION['message_type'] = 'danger';
+        }
+        
+        header('Location: index.php?c=Recette&a=attente');
+        exit;
+    }
+
+    //fonction permettant d'afficher les recettes à approuver (admin uniquement) - alias de attente
+    function aApprouver(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            $_SESSION['message'] = 'Vous n\'avez pas les droits pour accéder à cette page.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php');
+            exit;
+        }
+        
+        // Récupérer les recettes en attente
+        $recettesEnAttente = $this->recetteModel->findAllPending();
+        
+        require_once(__DIR__ . '/../Views/Recette/aApprouver.php');
+    }
+
+    //fonction permettant de valider une recette (admin uniquement) - alias de approuver
+    function valider(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            $_SESSION['message'] = 'Vous n\'avez pas les droits pour effectuer cette action.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php');
+            exit;
+        }
+        
+        // Récupérer l'ID de la recette
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        
+        if ($id <= 0) {
+            $_SESSION['message'] = 'ID de recette invalide.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php?c=Recette&a=aApprouver');
+            exit;
+        }
+        
+        // Valider la recette
+        $resultat = $this->recetteModel->approve($id);
+        
+        if ($resultat) {
+            // Journalisation
+            if (isset($GLOBALS['logger'])) {
+                $GLOBALS['logger']->info('Validation de recette', [
+                    'recette_id' => $id,
+                    'admin' => $_SESSION['identifiant'] ?? 'unknown'
+                ]);
+            }
+            
+            $_SESSION['message'] = 'Recette validée avec succès.';
+            $_SESSION['message_type'] = 'success';
+        } else {
+            $_SESSION['message'] = 'Erreur lors de la validation de la recette.';
+            $_SESSION['message_type'] = 'danger';
+        }
+        
+        header('Location: index.php?c=Recette&a=aApprouver');
+        exit;
+    }
+
+    //fonction permettant d'afficher les recettes non validées pour l'utilisateur connecté
+    function nonValidesPourUtilisateur(){
+        // Vérifier si l'utilisateur est connecté
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['message'] = 'Vous devez être connecté pour accéder à cette page.';
+            $_SESSION['message_type'] = 'warning';
+            header('Location: index.php?c=User&a=connexion');
+            exit;
+        }
+        
+        // Récupérer l'email de l'utilisateur connecté
+        $auteur = $_SESSION['mail'];
+        
+        // Récupérer les recettes non validées de l'utilisateur
+        $recettesEnCours = $this->recetteModel->findPendingByAuthor($auteur);
+        
+        require_once(__DIR__ . '/../Views/Recette/enCoursValidation.php');
+    }
+
+    //fonction permettant de compter le nombre de recettes non validées (pour les notifications)
+    function compterNonValidees(){
+        // Définir le header pour indiquer du JSON
+        header('Content-Type: application/json');
+        
+        // Compter les recettes en attente
+        $count = $this->recetteModel->countPending();
+        
+        // Retourner le comptage en JSON
+        echo json_encode(['count' => $count]);
+        exit;
+    }
 }
+
+
+
+
 
 
 

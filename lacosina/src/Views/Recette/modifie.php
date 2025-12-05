@@ -6,7 +6,7 @@
         <a href="?c=Recette&a=detail&id=<?php echo $id; ?>" class="btn btn-primary">
             Voir la recette modifiée
         </a>
-        <a href="?c=Recette&a=lister" class="btn btn-secondary">
+        <a href="?c=Recette&a=index" class="btn btn-secondary">
             Retour à la liste des recettes
         </a>
     </div>

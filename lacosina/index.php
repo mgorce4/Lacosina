@@ -31,7 +31,7 @@ $controller = $_GET['c'] ?? 'home';
 $action = $_GET['a'] ?? 'index';
 
 // Actions JSON (sans header/footer)
-$jsonActions = ['getFavoris', 'modifierProfil', 'ajouter', 'supprimer', 'toggle', 'indexJSON'];
+$jsonActions = ['getFavoris', 'modifierProfil', 'ajouter', 'supprimer', 'toggle', 'indexJSON', 'compterNonValidees', 'valider', 'approuver', 'compterNonValidees'];
 $isJson = in_array($action, $jsonActions);
 
 // Header

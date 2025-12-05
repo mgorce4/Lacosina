@@ -41,7 +41,14 @@
                 ?>
                 <img src="<?php echo $imageSrc; ?>" class="card-img-top" alt="Image de <?php echo htmlspecialchars($recipe['titre']); ?>" style="height: 200px; object-fit: cover;">
                 <div class="card-body">
-                    <h2 class="card-title"><?php echo htmlspecialchars($recipe['titre']); ?></h2>
+                    <h2 class="card-title">
+                        <?php echo htmlspecialchars($recipe['titre']); ?>
+                        <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1 && isset($recipe['isApproved']) && $recipe['isApproved'] == 0): ?>
+                            <span class="badge bg-warning text-dark ms-2" title="En attente d'approbation">
+                                <i class="bi bi-clock-history"></i> En attente
+                            </span>
+                        <?php endif; ?>
+                    </h2>
                     <p class="card-text"><?php echo htmlspecialchars(substr($recipe['description'], 0, 100)) . '...'; ?></p>
                     <p class="text-muted">Auteur : <a href="mailto:<?php echo htmlspecialchars($recipe['auteur']); ?>"><?php echo htmlspecialchars($recipe['auteur']); ?></a></p>
                     <div class="mt-3 d-flex justify-content-between align-items-center">

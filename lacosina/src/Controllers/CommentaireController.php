@@ -135,4 +135,68 @@ class CommentaireController{
         header('Location: index.php?c=Recette&a=detail&id=' . $recetteId);
         exit;
     }
+
+    // Fonction permettant d'afficher les commentaires en attente d'approbation
+    function aApprouver(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            $_SESSION['message'] = 'Vous n\'avez pas les droits pour accéder à cette page.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php');
+            exit;
+        }
+
+        // Récupérer les commentaires en attente
+        $commentairesEnAttente = $this->commentaireModel->findAllPending();
+        
+        require_once(__DIR__ . '/../Views/Commentaire/aApprouver.php');
+    }
+
+    // Fonction permettant d'approuver un commentaire
+    function approuver(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            $_SESSION['message'] = 'Vous n\'avez pas les droits pour approuver un commentaire.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php');
+            exit;
+        }
+
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+        if ($id <= 0) {
+            $_SESSION['message'] = 'ID de commentaire invalide.';
+            $_SESSION['message_type'] = 'danger';
+            header('Location: index.php?c=Commentaire&a=aApprouver');
+            exit;
+        }
+
+        // Approuver le commentaire
+        $result = $this->commentaireModel->approve($id);
+
+        if ($result) {
+            $GLOBALS['logger']->info('Commentaire approuvé', ['commentaire_id' => $id, 'admin' => $_SESSION['identifiant'] ?? 'Inconnu']);
+            $_SESSION['message'] = 'Commentaire approuvé avec succès.';
+            $_SESSION['message_type'] = 'success';
+        } else {
+            $_SESSION['message'] = 'Erreur lors de l\'approbation du commentaire.';
+            $_SESSION['message_type'] = 'danger';
+        }
+
+        // Rediriger vers la liste des commentaires à approuver
+        header('Location: index.php?c=Commentaire&a=aApprouver');
+        exit;
+    }
+
+    // Fonction permettant de compter les commentaires en attente (pour les notifications)
+    function compterNonValidees(){
+        // Vérifier si l'utilisateur est admin
+        if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1) {
+            echo json_encode(['count' => 0]);
+            return;
+        }
+
+        $count = $this->commentaireModel->countPending();
+        echo json_encode(['count' => $count]);
+    }
 }

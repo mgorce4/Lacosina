@@ -39,7 +39,7 @@
             <div class="mt-4 mb-5">
                 <div class="row">
                     <div class="col-12">
-                        <a href="?c=Recette&a=lister" class="btn btn-primary me-3">
+                        <a href="?c=Recette&a=index" class="btn btn-primary me-3">
                             ← Retour à la liste des recettes
                         </a>
                         <?php
@@ -220,7 +220,7 @@
         <p>La recette demandée n'existe pas ou n'a pas pu être chargée.</p>
         <hr>
         <p class="mb-0">
-            <a href="?c=Recette&a=lister" class="btn btn-primary">Retour à la liste des recettes</a>
+            <a href="?c=Recette&a=index" class="btn btn-primary">Retour à la liste des recettes</a>
         </p>
     </div>
 <?php endif; ?>

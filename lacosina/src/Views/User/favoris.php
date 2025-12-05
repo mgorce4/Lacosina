@@ -11,7 +11,7 @@
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle"></i> Vous n'avez pas encore de recettes favorites.
                     <br>
-                    <a href="?c=lister" class="alert-link">Découvrir les recettes</a>
+                    <a href="?c=Recette&a=index" class="alert-link">Découvrir les recettes</a>
                 </div>
             <?php else: ?>
                 <p class="text-muted mb-4">
@@ -68,7 +68,7 @@
             
             <hr>
             <div class="mt-4 mb-4">
-                <a href="?c=lister" class="btn btn-secondary">
+                <a href="?c=Recette&a=index" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Retour aux recettes
                 </a>
                 <a href="?c=home" class="btn btn-outline-secondary">

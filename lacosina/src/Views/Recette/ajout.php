@@ -22,10 +22,13 @@
         </select>
     </div>
     <div class="mb-3">
-        <label for="ingredients" class="form-label">Mail de l'auteur</label>
-        <textarea class="form-control" name="auteur" id="auteur"  required></textarea>
+        <label for="auteur" class="form-label">Mail de l'auteur</label>
+        <input type="email" class="form-control" name="auteur" id="auteur" value="<?php echo isset($_SESSION['mail']) ? htmlspecialchars($_SESSION['mail']) : ''; ?>" readonly required>
+        <div class="form-text">Votre adresse email est automatiquement remplie depuis votre profil.</div>
     </div>
     <div class="mb-3">
-        <button type="submit" class="btn btn-primary" id="enregistrer" >Enregistrer</button>
+        <button type="submit" class="btn btn-primary" id="enregistrer">
+            <?php echo (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1) ? 'Enregistrer' : 'Proposer la recette'; ?>
+        </button>
     </div>
 </form>
