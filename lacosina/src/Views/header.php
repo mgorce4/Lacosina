@@ -57,7 +57,13 @@
                             <?php else: ?>
                                 <li><a class="dropdown-item" href='?c=ajout'>Proposer une recette</a></li>
                             <?php endif; ?>
+                            <li><a class="dropdown-item" href='?c=Favori&a=liste'>Mes recettes favorites</a></li>
+                            <?php if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1): ?>
+                                <li><a class="dropdown-item" href='?c=Recette&a=nonValidesPourUtilisateur'>Mes recettes en cours de validation</a></li>
+                            <?php endif; ?>
                             <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1): ?>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Administration</h6></li>
                                 <li><a class="dropdown-item d-flex justify-content-between align-items-center" href='?c=Recette&a=aApprouver' id="menu-recettes-approuver">
                                     Recettes à approuver
                                     <span id="badge-recettes-menu" class="badge bg-danger rounded-pill" style="display: none;">0</span>
@@ -66,14 +72,6 @@
                                     Commentaires à approuver
                                     <span id="badge-commentaires-menu" class="badge bg-danger rounded-pill" style="display: none;">0</span>
                                 </a></li>
-                            <?php endif; ?>
-                            <li><a class="dropdown-item" href='?c=Favori&a=liste'>Mes recettes favorites</a></li>
-                            <?php if (!isset($_SESSION['isAdmin']) || $_SESSION['isAdmin'] != 1): ?>
-                                <li><a class="dropdown-item" href='?c=Recette&a=nonValidesPourUtilisateur'>Mes recettes en cours de validation</a></li>
-                            <?php endif; ?>
-                            <?php if (isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1): ?>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><h6 class="dropdown-header">Administration</h6></li>
                                 <li><a class="dropdown-item" href='?c=Commentaire&a=liste'>Liste des commentaires</a></li>
                             <?php endif; ?>
                             <li><hr class="dropdown-divider"></li>
