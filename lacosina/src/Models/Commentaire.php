@@ -54,7 +54,7 @@ Class Commentaire {
     }
 
     // Ajouter un nouveau commentaire
-    public function add($recetteId, $pseudo, $commentaire, $isApproved = 1){
+    public function add($recetteId, $pseudo, $commentaire, $isApproved = 0){
         $query = "INSERT INTO comments (recette_id, pseudo, commentaire, isApproved, create_time) VALUES (:recette_id, :pseudo, :commentaire, :isApproved, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':recette_id', $recetteId);
